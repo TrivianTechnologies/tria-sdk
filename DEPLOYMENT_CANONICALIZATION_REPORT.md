@@ -2,7 +2,7 @@
 
 ## Release gate
 
-LOCAL SDK VALIDATION PASSED; FULL HISTORICAL HARNESS AND REMOTE CI PENDING. This source candidate is not released. No merge, tag,
+READY FOR REVIEW: LOCAL SDK VALIDATION AND INITIAL REMOTE CI PASSED; FULL HISTORICAL HARNESS BLOCKED. This source candidate is not released. No merge, tag,
 package publication, service deployment or Pages approval is performed by this train.
 Sarasha retains those decisions.
 
@@ -101,7 +101,16 @@ wheel checks also exercise actual separate interpreters against the same SQLite
 store: ALLOW/one entry before revocation, BLOCK/zero entries after revocation.
 The two interpreter matrices and supporting checks recorded 78 command outcomes;
 expected raw frozen failures are accounted separately. No live model calls occurred.
-Exact commit CI: PENDING draft PR.
+Remote publication: draft PR [#55](https://github.com/TrivianTechnologies/tria-sdk/pull/55).
+Initial remote commit `70081b1aa8143f267b3631e55f7d2f286e42c337` has tree
+`24cd02225224285e90b077092307d7ac87f3fb25`, independently fetched and verified equal
+to the complete validated local candidate plus report. Its GitHub Actions
+[run 36915837744](https://github.com/TrivianTechnologies/tria-sdk/actions/runs/36915837744)
+passed both Python 3.11 and 3.12 jobs, including tests, offline references, builds,
+wheel installation and version checks. This report-only follow-up changes no
+runtime, test, package, workflow or frozen evidence file. Its final exact-head CI
+status is recorded in the PR checks and review summary; the initial run is not
+misrepresented as testing a later commit.
 
 Review note: the recovered ancestry-expiry case expires both parent and child;
 it is not described as isolating ancestor-only expiry. The separate-process case
@@ -127,8 +136,10 @@ kept; use a new candidate store and explicit legitimate grants.
 
 Current raw SDK frozen-witness execution: 3 PASS / 2 FAIL on both interpreter versions, as above.
 The complete cross-component historical harness is not part of this public SDK;
-the full unchanged 47-test rerun with pinned historical companions is in progress
-and will be reported separately rather than inferred green.
+the full unchanged 47-test rerun is blocked because pinned companion source access
+remains blocked/unverified. It is not reported as executed or green. This evidence
+gap remains a release-gate limitation for Sarasha; review readiness is not release
+authorization or a claim of complete constellation verification.
 
 ## Evolution Train observations
 
