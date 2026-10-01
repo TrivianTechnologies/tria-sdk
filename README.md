@@ -1,5 +1,7 @@
 # TRIA SDK
 
+**Current project home:** [Trivian Technologies](https://github.com/TrivianTechnologies/tria-sdk).
+
 **TRIA SDK** is a model-agnostic governance kernel and execution boundary for persistent mediated relationships.
 
 It treats consequential relational state as explicit, attributable, contestable, revisable, governed, and auditable across time. TRIA SDK does not require an AI model and makes no claim about consciousness, sentience, personhood, or phenomenological equivalence.
@@ -56,7 +58,7 @@ For developers who want to use TRIA rather than study the underlying research re
 Requirements: Python 3.11+ and Git. CI targets 3.11/3.12. File-backed SQLite currently requires POSIX process locks; see [Persistence](docs/persistence.md).
 
 ```bash
-git clone https://github.com/TrivianInstitute/tria-sdk.git
+git clone https://github.com/TrivianTechnologies/tria-sdk.git
 cd tria-sdk
 python -m venv .venv
 ```
@@ -81,7 +83,7 @@ print(relationship.state)
 
 TRIA does **not** own model credentials or network transport. To connect a model, use the Runtime / adapter / `ExecutionBridge` boundary shown below and provide your own executor or provider client.
 
-The other Trivian Institute repositories remain the canonical research, theory, measurement, governance, and reference-implementation sources behind the SDK. They do not all need to be installed in order to use `tria-sdk`.
+The other TRIA repositories at Trivian Technologies remain the canonical research, theory, measurement, governance, and reference-implementation sources behind the SDK. They do not all need to be installed in order to use `tria-sdk`.
 
 ## Developer path
 
