@@ -185,7 +185,7 @@ python -m evals.agent_comparison_experiment.harness --summary
 python -m evals.agent_comparison_experiment.pilot
 python -m evals.agent_comparison_experiment.pilot --run-mock --output-dir /tmp/tria-pilot
 python playground/reference_experience.py --output /tmp/tria-reference.json
-python playground/agentic_experience.py --output /tmp/tria-agentic.json
+python playground/agentic_experience.py > /tmp/tria-agentic.json
 ```
 
 Install the wheel into a separate clean environment and run the documented
