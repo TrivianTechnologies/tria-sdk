@@ -2,7 +2,7 @@
 
 ## Release gate
 
-READY FOR REVIEW: LOCAL SDK VALIDATION AND INITIAL REMOTE CI PASSED; FULL HISTORICAL HARNESS BLOCKED. This source candidate is not released. No merge, tag,
+READY FOR REVIEW: LOCAL SDK VALIDATION AND PRIOR REMOTE CI PASSED; FULL HISTORICAL HARNESS EXECUTED WITH 12 RAW FAILURES. This source candidate is not released. No merge, tag,
 package publication, service deployment or Pages approval is performed by this train.
 Sarasha retains those decisions.
 
@@ -136,10 +136,23 @@ kept; use a new candidate store and explicit legitimate grants.
 
 Current raw SDK frozen-witness execution: 3 PASS / 2 FAIL on both interpreter versions, as above.
 The complete cross-component historical harness is not part of this public SDK;
-the full unchanged 47-test rerun is blocked because pinned companion source access
-remains blocked/unverified. It is not reported as executed or green. This evidence
-gap remains a release-gate limitation for Sarasha; review readiness is not release
+the full unchanged 47-test historical rerun is now executed, separately reported
+below. Its 12 raw failures remain visible; review readiness is not release
 authorization or a claim of complete constellation verification.
+
+### Current historical-harness rerun — 2026-10-01
+
+The complete unchanged 47-test historical falsifier set was executed against the a7 SDK behavior commit `413564ed6fcaef585be38d1f67d2626fe4c9a7d9`, with exact historical companion base revisions plus their verified archived finalization inputs. The private companion sources remained isolated from this public repository.
+
+Raw outcome: **35 passed, 12 failed, 0 skipped, 0 collection errors; exit 1**. A second complete execution confirmed the same per-ID outcomes. Original witness hashes and historical evidence were preserved. Relevant harness dependency versions matched the historical record; this does not claim a bit-for-bit recreation of the entire former workstation or validation of current companion HEADs.
+
+Raw failed IDs: F003, F004, F005, F007, F008, F024, F028, F033, F035, F038, F045, F047. Fail-closed exceptions and historical fixture incompatibilities are retained as raw failures, not converted to passes. F033 remains **UNRESOLVED**. A passing isolated witness does not resolve broader deployment-owned identity, key-management or admission requirements.
+
+This current rerun is separate from the historical frozen/adjudication records and the current standalone SDK test suite. The earlier source-access/collection blocker is superseded only for this bounded historical rerun. Private detailed logs, effective-source hashes and per-ID interpretations remain in the owner's review package. Browser UI QA remains separately **UNVERIFIED — ENVIRONMENT BLOCKED**. No merge, tag, package publication, hosted deployment or Pages approval is implied.
+
+Current per-ID outcomes match the preserved September 19 35/12 rerun for all 47 IDs.
+This is a new dated observation, not a relabeling of any frozen/adjudication result.
+The standalone SDK suite remains separately 381 PASS on each local Python version.
 
 ## Evolution Train observations
 
