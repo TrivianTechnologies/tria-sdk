@@ -1,6 +1,18 @@
 # Changelog
 
-## Unreleased
+## [0.1.0a7] — unreleased alpha candidate
+
+- Canonicalize current engineering links to TrivianTechnologies, correct current release guidance and retain historical attribution/schema identifiers
+- Clarify local no-resurrection scope and preserve F033 as UNRESOLVED for independent-store freshness; add separate current-history replay and metadata regression observations
+
+Normative delegation contract 0.1.3: require possessed capability and DELEGATE; bind parent grant event identities; revalidate ancestry, expiry, purpose and conditions; parent replacement requires explicit redelegation. Projection 0.6 rejects prior bundles without migration. Agentic falsifiers added. No distributed alignment guarantee.
+
+The public playground adds a bounded authority/delegation walkthrough and retains
+existing scenario and reference APIs. Demonstrated scope: current local handoff
+authorization. Event schema 0.3 / projection 0.6 / operational specification 0.1.3.
+No automatic migration; preserve old stores and initialize fresh candidate state.
+
+## Earlier unreleased work
 
 ### Evaluation and adoption
 - Add a five-step SDK-backed scheduling reference with synthetic JSON reports, code fingerprints, inspectable outcomes and SQLite reopen checks.

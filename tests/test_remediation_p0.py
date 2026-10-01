@@ -109,6 +109,7 @@ def test_direct_admin_vs_participant_delegation():
     r=Tria().create_relationship(['human:a','agent:b','agent:c'])
     with pytest.raises(DelegationError):r.delegate_permission('agent:b','agent:c','x',Capability.ACT)
     r.admin.grant_permission('human:a','agent:b','x',Capability.DELEGATE)
+    r.admin.grant_permission('human:a','agent:b','x',Capability.ACT)
     r.delegate_permission('agent:b','agent:c','x',Capability.ACT)
     assert r.check_capability('agent:c','x',Capability.ACT).outcome==GovernanceOutcome.ALLOW
 

@@ -56,7 +56,7 @@
       "type": "object"
     },
     "schema_version": {
-      "const": "0.2"
+      "const": "0.3"
     },
     "policy_version": {
       "type": [

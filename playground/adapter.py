@@ -22,6 +22,7 @@ from pathlib import Path
 from typing import Any
 
 from reference_experience import run_reference
+from agentic_experience import run_agentic
 from sdk_scenarios import agentic_action, consent_and_revocation, contested_reality
 
 HOST = "127.0.0.1"
@@ -137,7 +138,8 @@ class PlaygroundHandler(BaseHTTPRequestHandler):
     def do_GET(self) -> None:
         pages = {"/": "index.html", "/index.html": "index.html",
                  "/before-with-tria.html": "before-with-tria.html",
-                 "/evaluate.html": "evaluate.html", "/evidence.html": "evidence.html"}
+                 "/evaluate.html": "evaluate.html", "/evidence.html": "evidence.html",
+                 "/agentic.html": "agentic.html"}
         if self.path in pages:
             data = (PLAYGROUND_DIR / pages[self.path]).read_bytes()
             self.send_response(200)
@@ -149,12 +151,12 @@ class PlaygroundHandler(BaseHTTPRequestHandler):
             self.wfile.write(data)
             return
         if self.path == "/healthz":
-            self._json(200, {"status": "ok", "adapter": "tria-playground-v0.2", "state_selection": True, "reference_experience": True})
+            self._json(200, {"status": "ok", "adapter": "tria-playground-v0.2", "state_selection": True, "reference_experience": True, "agentic_experience": True})
             return
         self._json(404, {"error": "not_found"})
 
     def do_POST(self) -> None:
-        if self.path not in {"/api/scenario", "/api/reference"}:
+        if self.path not in {"/api/scenario", "/api/reference", "/api/agentic"}:
             self._json(404, {"error": "not_found"})
             return
         try:
@@ -172,10 +174,10 @@ class PlaygroundHandler(BaseHTTPRequestHandler):
             payload = json.loads(self.rfile.read(content_length))
             if not isinstance(payload, dict):
                 raise ValueError("JSON body must be an object.")
-            if self.path == "/api/reference":
+            if self.path in {"/api/reference", "/api/agentic"}:
                 if payload:
                     raise ValueError("The reference experience accepts an empty object only.")
-                result = run_reference()
+                result = run_agentic() if self.path == "/api/agentic" else run_reference()
             else:
                 result = run_scenario(payload)
         except (json.JSONDecodeError, UnicodeDecodeError, ValueError) as exc:

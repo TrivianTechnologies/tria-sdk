@@ -6,11 +6,11 @@ This file is the machine-facing orientation guide for coding agents, autonomous 
 
 **Project:** TRIA SDK  
 **Expanded name:** Trivian Relational Intelligence Architecture SDK  
-**Canonical repository:** `TrivianInstitute/tria-sdk`  
+**Canonical repository:** `TrivianTechnologies/tria-sdk`
 **Package:** `tria-sdk`  
 **Python import:** `tria`  
-**Current package version:** `0.1.0a6`
-**Current operational specification:** `0.1.2`  
+**Current package version:** `0.1.0a7`
+**Current operational specification:** `0.1.3`
 **Current diagnostic specification:** `0.2`
 **Status:** experimental alpha
 
@@ -26,7 +26,7 @@ TRIA does not require an AI model and does not claim consciousness, sentience, p
 
 Before changing behavior, inspect these files in order:
 
-1. `docs/TRIA_OPERATIONAL_SPEC_v0.1.2.md` — current operational contract.
+1. `docs/TRIA_OPERATIONAL_SPEC_v0.1.3.md` — current operational contract.
 2. `docs/TRIA_DIAGNOSTIC_INTERFACE_v0.2.md` — read-only diagnostic contract.
 3. `docs/TRIA_TRUTH_INTEGRITY_PROTOCOL_v0.1.md` — truth-integrity evidence and classification contract.
 4. `schemas/tria-diagnostic-report.v0.2.schema.json` — diagnostic wire schema.
@@ -61,12 +61,12 @@ Do not replace event history with mutable current-state storage.
 
 Current compatibility values:
 
-- package: `0.1.0a6`
-- Core operational specification: `0.1.2`
+- package: `0.1.0a7`
+- Core operational specification: `0.1.3`
 - Diagnostic Interface: `0.2`
 - Truth-Integrity Protocol: `0.1`
-- event schema: `0.2`
-- projection: `0.5`
+- event schema: `0.3`
+- projection: `0.6`
 - replay bundle: `0.1`
 - Python: `>=3.11`
 

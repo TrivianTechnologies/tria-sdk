@@ -1,6 +1,6 @@
 # Contributing to TRIA SDK
 
-TRIA SDK is research infrastructure for governed relational state. Contributions should preserve the architectural invariants in `docs/TRIA_CORE_SPEC_v0.1.1.md`.
+TRIA SDK is research infrastructure for governed relational state. Contributions should preserve the current operational invariants in `docs/TRIA_OPERATIONAL_SPEC_v0.1.3.md` and `docs/agentic-alignment-contract.md`; the conceptual core specification remains historical context.
 
 ## Development
 

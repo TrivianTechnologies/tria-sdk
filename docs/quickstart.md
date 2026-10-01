@@ -10,7 +10,7 @@ POSIX process locks (Linux/macOS). Other platforms can use InMemoryEventStore;
 file-backed SQLite raises UnsupportedStoreError where process locks are unavailable.
 
 ```bash
-git clone https://github.com/TrivianInstitute/tria-sdk.git
+git clone https://github.com/TrivianTechnologies/tria-sdk.git
 cd tria-sdk
 # Select the remediation branch while reviewing this prerelease.
 git checkout remediation/clean-room-p0-p1

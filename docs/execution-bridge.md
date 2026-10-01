@@ -7,6 +7,8 @@ only. An ALLOW plan is a historical snapshot, not a reusable authorization token
 
 ## Enforced local order
 
+The demonstrated guarantee is **current local handoff authorization**.
+
 1. Runtime checks registered requester, valid relationship, lifecycle, and every
    declared consent/capability requirement. Requested context adds READ if omitted.
 2. Authorized resources are resolved and the adapter translates the plan.

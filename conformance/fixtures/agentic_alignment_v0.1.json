@@ -1,0 +1,14 @@
+{
+  "contract": "agentic-alignment/0.1",
+  "tests": "tests/test_agentic_alignment.py",
+  "properties": [
+    "peer_goal_consensus_do_not_authorize",
+    "persistence_does_not_expand_authority",
+    "delegation_requires_capability_and_delegate",
+    "bounds_attenuate",
+    "ancestors_current",
+    "replacement_does_not_resurrect",
+    "final_local_recheck"
+  ],
+  "empirical_alignment_claim": false
+}

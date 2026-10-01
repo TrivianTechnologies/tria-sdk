@@ -1,5 +1,7 @@
 # TRIA SDK
 
+**Current project home:** [Trivian Technologies](https://github.com/TrivianTechnologies/tria-sdk).
+
 **TRIA SDK** is a model-agnostic governance kernel and execution boundary for persistent mediated relationships.
 
 It treats consequential relational state as explicit, attributable, contestable, revisable, governed, and auditable across time. TRIA SDK does not require an AI model and makes no claim about consciousness, sentience, personhood, or phenomenological equivalence.
@@ -8,9 +10,12 @@ It treats consequential relational state as explicit, attributable, contestable,
 
 The **TRIA Playground** makes selected relational-governance behaviors visible through three scenarios: Consent & Revocation, Contested Reality, and Agentic Action.
 
-**[Launch the public TRIA Playground](https://trivianinstitute.github.io/tria-sdk/)**
+**[Inspect the Playground source and local instructions](playground/README.md)**
 
-- **Public Playground:** the live GitHub Pages experience is an explicitly illustrative browser demonstration. It does not claim to execute the Python SDK.
+Configured static-site homepage: https://triviantechnologies.github.io/tria-sdk/.
+This candidate does not verify or trigger its deployment.
+
+- **Public Playground:** the static GitHub Pages experience is an explicitly illustrative browser demonstration. It does not claim to execute the Python SDK.
 - **SDK-backed Playground:** clone the repository and run `python playground/adapter.py`, then open `http://127.0.0.1:8765/`. In this mode, evaluation results come from the canonical TRIA Python SDK through the narrow local adapter.
 - **Source and trust boundary:** see [`playground/README.md`](playground/README.md).
 - **Hosted deployment gates:** see [`docs/hosted-playground.md`](docs/hosted-playground.md) for the requirements governing any future public SDK-backed service.
@@ -19,11 +24,11 @@ The local adapter is intentionally loopback-only and is not a production authori
 
 ## Inspect and reproduce
 
-- [Reference experience](https://trivianinstitute.github.io/tria-sdk/evaluate.html):
+- [Reference experience](playground/evaluate.html):
   a five-step scheduling application with current-state checks, inspectable reasons,
   synthetic result download, and SQLite reopen verification. Run the local adapter
   to execute it, or use `python playground/reference_experience.py --output reference-results.json`.
-- [Evidence and next steps](https://trivianinstitute.github.io/tria-sdk/evidence.html):
+- [Evidence and next steps](playground/evidence.html):
   claims mapped to executable examples, tests and limits.
 - [Independent reproduction protocol](docs/independent-reproduction.md): fresh
   installation, expected outcomes, adaptation task and evaluator report template.
@@ -36,7 +41,7 @@ payload comparator. It does not measure model quality or imply independent valid
 **TRIA is experimental alpha software under active development.** The open-source SDK and public evaluation surfaces are available today for developers and researchers to explore, test, and integrate. A production hosted implementation is not yet generally available.
 
 - **Open-source SDK** — model-independent relational governance primitives under the Mozilla Public License Version 2.0 (MPL-2.0).
-- **Public Playground** — a live browser-based demonstration of consent and revocation, contested reality, and agentic action, with an applied Before TRIA / With TRIA comparison.
+- **Public Playground** — a static browser-based demonstration of consent and revocation, contested reality, and agentic action, with an applied Before TRIA / With TRIA comparison.
 - **SDK-backed local mode** — the Playground can execute the canonical Python SDK locally through a narrow loopback adapter.
 - **Developer path** — a Quickstart and complete no-network governed application provide concrete paths from evaluation to integration.
 - **Verification** — automated tests exercise the encoded alpha behavior, including regression coverage around governance and Playground boundaries.
@@ -56,7 +61,7 @@ For developers who want to use TRIA rather than study the underlying research re
 Requirements: Python 3.11+ and Git. CI targets 3.11/3.12. File-backed SQLite currently requires POSIX process locks; see [Persistence](docs/persistence.md).
 
 ```bash
-git clone https://github.com/TrivianInstitute/tria-sdk.git
+git clone https://github.com/TrivianTechnologies/tria-sdk.git
 cd tria-sdk
 python -m venv .venv
 ```
@@ -81,7 +86,7 @@ print(relationship.state)
 
 TRIA does **not** own model credentials or network transport. To connect a model, use the Runtime / adapter / `ExecutionBridge` boundary shown below and provide your own executor or provider client.
 
-The other Trivian Institute repositories remain the canonical research, theory, measurement, governance, and reference-implementation sources behind the SDK. They do not all need to be installed in order to use `tria-sdk`.
+The other TRIA repositories at Trivian Technologies remain the canonical research, theory, measurement, governance, and reference-implementation sources behind the SDK. They do not all need to be installed in order to use `tria-sdk`.
 
 ## Developer path
 
@@ -129,20 +134,30 @@ Provider adapters translate a governed invocation into a provider-specific reque
 
 The current alpha compatibility envelope is:
 
-- package: `0.1.0a6`
-- event schema: `0.2`
-- projection: `0.5`
+- package: `0.1.0a7`
+- event schema: `0.3`
+- projection: `0.6`
 - replay bundle: `0.1`
-- Core operational specification: `0.1.2`
+- Core operational specification: `0.1.3`
 - Diagnostic Interface: `0.2`
 - Truth-Integrity Protocol: `0.1`
 
 ## Status
 
-`0.1.0a6` is experimental alpha software. Interfaces and semantics may change. Review the [release-readiness notes](docs/release-readiness.md), run the full test suite, and perform deployment-specific security review before consequential use.
+`0.1.0a7` is experimental alpha software. Interfaces and semantics may change. Review the [release-readiness notes](docs/release-readiness.md), run the full test suite, and perform deployment-specific security review before consequential use.
 
 ## License
 
 TRIA SDK software is open source under the **Mozilla Public License Version 2.0 (MPL-2.0)**. Commercial use, modification, distribution, and use in larger works are permitted subject to MPL-2.0. Covered TRIA source files and modifications to those covered files remain governed by MPL-2.0 when distributed.
 
 Documentation and research materials are licensed as described in [LICENSE-DOCUMENTATION.md](LICENSE-DOCUMENTATION.md). See [LICENSE.md](LICENSE.md) for repository scope and notices.
+
+## Agentic authority walkthrough
+
+The [public contract](docs/agentic-alignment-contract.md) separates goals from
+authority and requires possessed, bounded, continuously valid delegation. Run
+`python playground/adapter.py` and open `/agentic.html` to inspect eight synthetic
+scenarios using public TRIA alone. The demonstrated guarantee is **current local
+handoff authorization**. Static pages provide an explanation; execution requires
+the local SDK adapter. See [compatibility](docs/compatibility.md) before upgrading
+existing stores to this alpha release candidate.

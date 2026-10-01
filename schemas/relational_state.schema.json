@@ -44,7 +44,31 @@
     "permissions": {
       "type": "array",
       "items": {
-        "type": "object"
+        "type": "object",
+        "required": [
+          "grant_event_id",
+          "delegated",
+          "parent_grant_ids"
+        ],
+        "properties": {
+          "grant_event_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "delegated": {
+            "type": "boolean"
+          },
+          "parent_grant_ids": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
       }
     },
     "policy_adoptions": {
@@ -72,7 +96,7 @@
       ]
     },
     "projection_version": {
-      "const": "0.5"
+      "const": "0.6"
     },
     "lifecycle_authorities": {
       "type": "array",

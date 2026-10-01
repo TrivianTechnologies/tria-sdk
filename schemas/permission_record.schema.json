@@ -3,7 +3,7 @@
   "$id": "https://trivianinstitute.org/tria/schemas/permission_record.schema.json",
   "title": "TRIA Permission Record",
   "type": "object",
-  "required": ["grantee", "resource", "capability", "granted_by", "active"],
+  "required": ["grantee", "resource", "capability", "granted_by", "active", "grant_event_id", "delegated", "parent_grant_ids"],
   "properties": {
     "grantee": {"type": "string"},
     "resource": {"type": "string"},
@@ -13,7 +13,10 @@
     "expires_at": {"type": ["string", "null"], "format": "date-time"},
     "conditions": {"type": "array", "items": {"type": "string"}},
     "policy_version": {"type": "string"},
-    "active": {"type": "boolean"}
+    "active": {"type": "boolean"},
+    "grant_event_id": {"type": ["string", "null"]},
+    "delegated": {"type": "boolean"},
+    "parent_grant_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
   },
   "additionalProperties": false
 }

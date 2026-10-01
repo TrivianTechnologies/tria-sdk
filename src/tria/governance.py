@@ -104,6 +104,9 @@ class GovernanceEngine:
             return lifecycle
         record = state.permissions.get((grantee, resource, capability))
         if record and record.active:
+            ancestry_error = self._authority_ancestry_error(state, record, purpose, satisfied_conditions, evaluated_at) if record.delegated or record.parent_grant_ids else None
+            if ancestry_error:
+                return GovernanceDecision(GovernanceOutcome.BLOCK, "core.permission.ancestry", "0.2", ancestry_error, evaluated_at=evaluated_at)
             if self._expired(record.expires_at, evaluated_at):
                 return GovernanceDecision(GovernanceOutcome.BLOCK, "core.permission.expiry", "0.1", f"{capability.value} permission for {grantee!r} on {resource!r} expired at {record.expires_at.isoformat()}.", evaluated_at=evaluated_at)
             if not self._purpose_matches(record.purpose, purpose):
@@ -113,6 +116,55 @@ class GovernanceEngine:
                 return GovernanceDecision(GovernanceOutcome.BLOCK, "core.permission.conditions", "0.1", f"{capability.value} permission conditions are not satisfied for {grantee!r} on {resource!r}: {missing!r}.", evaluated_at=evaluated_at)
             return GovernanceDecision(GovernanceOutcome.ALLOW, "core.permission.active", "0.1", f"{grantee!r} has active {capability.value} permission for {resource!r} with requested purpose and conditions.", evaluated_at=evaluated_at)
         return GovernanceDecision(GovernanceOutcome.BLOCK, "core.permission.active", "0.1", f"No active {capability.value} permission exists for {grantee!r} on {resource!r}.", evaluated_at=evaluated_at)
+
+    def _authority_ancestry_error(self, state, record, purpose, conditions, now):
+        """Validate a DAG of current grants without recursion or granting authority.
+
+        Event identities deliberately prevent regrant from reviving old descendants.
+        Fabricated state remains outside the trusted-host boundary.
+        """
+        current = {r.grant_event_id: r for r in state.permissions.values() if r.grant_event_id}
+        pending = [(record, False)]
+        visiting, complete = set(), set()
+        while pending:
+            node, leaving = pending.pop()
+            identity = node.grant_event_id
+            if leaving:
+                visiting.remove(identity)
+                complete.add(identity)
+                continue
+            if identity in complete:
+                continue
+            if identity in visiting:
+                return "Delegation ancestry contains a cycle."
+            if not node.active or node.grantee not in state.participants:
+                return "Delegation ancestor is inactive or its subject is unknown."
+            if (node.grantee, node.resource, node.capability.value) in state.ambiguous_permissions:
+                return "Delegation ancestor is causally ambiguous."
+            if self._expired(node.expires_at, now) or not self._purpose_matches(node.purpose, purpose) or not self._conditions_match(node.conditions, conditions):
+                return "Delegation ancestor no longer permits this purpose, time or conditions."
+            if type(node.delegated) is not bool:
+                return "Invalid delegation marker."
+            if not node.delegated:
+                if node.parent_grant_ids:
+                    return "Administrative root cannot carry delegated ancestry."
+                continue
+            if not identity or not node.parent_grant_ids or len(set(node.parent_grant_ids)) != len(node.parent_grant_ids):
+                return "Delegated authority lacks unambiguous parent grant references."
+            parents = [current.get(i) for i in node.parent_grant_ids]
+            if any(p is None for p in parents):
+                return "Delegation ancestor is absent or superseded; explicit redelegation is required."
+            if {p.capability for p in parents} != {node.capability, Capability.DELEGATE} or any(p.grantee != node.granted_by or p.resource != node.resource for p in parents):
+                return "Delegation parents do not establish capability possession and delegation rights."
+            for parent in parents:
+                if (parent.purpose is not None and node.purpose != parent.purpose
+                    or not set(parent.conditions).issubset(node.conditions)
+                    or parent.expires_at is not None and (node.expires_at is None or node.expires_at > parent.expires_at)):
+                    return "Delegation weakens an inherited purpose, condition or expiry."
+            visiting.add(identity)
+            pending.append((node, True))
+            pending.extend((parent, False) for parent in parents)
+        return None
 
     def require_lifecycle_capability(self, state: RelationalState, capability: Capability) -> GovernanceDecision:
         allowed: dict[LifecycleState, frozenset[Capability]] = {

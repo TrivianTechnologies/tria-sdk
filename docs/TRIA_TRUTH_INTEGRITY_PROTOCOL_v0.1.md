@@ -1,7 +1,7 @@
 # TRIA Truth-Integrity Protocol v0.1
 
 **Status:** implemented public reference protocol  
-**Implementation:** `tria-sdk` `0.1.0a6`  
+**Implementation:** introduced in `tria-sdk` `0.1.0a6`; compatible with candidate `0.1.0a7`
 **Canonical operation:** `tria.assess_truth_integrity`  
 **Assessment schema:** `schemas/tria-truth-integrity-assessment.v0.1.schema.json`
 
