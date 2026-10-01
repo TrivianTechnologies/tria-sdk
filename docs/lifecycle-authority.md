@@ -44,4 +44,4 @@ This preserves the distinction between:
 ## Projection compatibility
 
 The original lifecycle-authority build advanced projection 0.2 to 0.3. That is historical.
-The current remediation uses event schema 0.2 / projection 0.5; see [compatibility](compatibility.md).
+The current agentic-contract candidate uses event schema 0.3 / projection 0.6; see [compatibility](compatibility.md).

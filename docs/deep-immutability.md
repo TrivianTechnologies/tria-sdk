@@ -20,7 +20,7 @@ Nested mappings become read-only mappings, mutable sequences become tuples, and 
 
 Event payload immutability is especially important because immutable events are foundational to deterministic replay and audit. A committed event payload cannot be edited in place after its hash has been computed.
 
-The original Build 024 did not change those versions. The current remediation explicitly advances event schema to 0.2 and projection to 0.5; see compatibility.md. Serialization converts frozen containers back to ordinary portable JSON structures.
+The original Build 024 did not change those versions. The earlier remediation advanced event schema to 0.2 and projection to 0.5. The agentic-contract candidate now requires event schema 0.3 and projection 0.6; see compatibility.md. Serialization converts frozen containers back to ordinary portable JSON structures.
 
 ## Boundary behavior
 

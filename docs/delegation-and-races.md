@@ -1,8 +1,6 @@
 # Delegation and causal race semantics
 
-TRIA distinguishes a direct permission grant from delegation. `DELEGATE` is an explicit governed capability: an actor may delegate another capability for a resource only while that actor holds active `DELEGATE` permission for the same resource. Delegation is recorded as a normal permission event with attributable grantor metadata; it does not create hidden authority.
-
-Policy authority follows the same principle. `tria:system` may bootstrap authority for a scope. After bootstrap, only an actor with active policy authority for that scope may grant or revoke policy authority for others.
+Current contract: [Agentic Alignment Contract](agentic-alignment-contract.md). Participant delegation requires both possessed capability and DELEGATE, preserves bounds and records continuously validated parent grant event IDs. Parent revocation, expiry or replacement invalidates descendants. This supersedes the 0.1.2 grant-time-only rule. Host administration is independent root issuance. Policy authority remains separately scoped and is not covered by this transitive capability model.
 
 ## Ambiguous permission races
 

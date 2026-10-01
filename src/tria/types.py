@@ -93,6 +93,12 @@ class PermissionRecord:
     conditions: tuple[str, ...] = ()
     policy_version: str = "0.1"
     active: bool = True
+    grant_event_id: str | None = None
+    delegated: bool = False
+    parent_grant_ids: tuple[str, ...] = ()
+
+    def __post_init__(self) -> None:
+        object.__setattr__(self, "parent_grant_ids", tuple(self.parent_grant_ids))
 
 
 @dataclass(frozen=True, slots=True)

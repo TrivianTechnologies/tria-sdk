@@ -1,8 +1,8 @@
 # TRIA Diagnostic Interface v0.2
 
 **Status:** implemented machine-facing contract  
-**Implementation:** `tria-sdk` `0.1.0a6`  
-**Operational specification:** `0.1.2`  
+**Implementation:** introduced in `tria-sdk` `0.1.0a6`; compatible with candidate `0.1.0a7`
+**Operational specification:** `0.1.3`
 **Canonical operation:** `tria.diagnose`  
 **Wire schema:** `schemas/tria-diagnostic-report.v0.2.schema.json`
 

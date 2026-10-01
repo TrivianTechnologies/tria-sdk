@@ -23,7 +23,7 @@ continue, but preserve the point of intervention and what assistance was given.
 ## Install and identify the candidate
 
 ```bash
-git clone https://github.com/TrivianInstitute/tria-sdk.git
+git clone https://github.com/TrivianTechnologies/tria-sdk.git
 cd tria-sdk
 # Replace REVIEW_COMMIT with the exact commit supplied for this review.
 git checkout REVIEW_COMMIT

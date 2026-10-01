@@ -13,7 +13,7 @@ from tria import (
 
 
 def test_public_version_matches_alpha_release():
-    assert __version__ == "0.1.0a6"
+    assert __version__ == "0.1.0a7"
 
 
 def test_primary_public_entrypoints_are_importable():

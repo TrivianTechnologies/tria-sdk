@@ -14,7 +14,7 @@ application](complete-governed-application.md) before advanced composition.
 | revoke_consent(actor, scope) | Registered participant and nonempty scope |
 | check_capability(grantee, resource, capability, purpose=None, *, satisfied_conditions=()) | Pure current decision; includes derived causal ambiguity; Capability enum required |
 | require_consent(actor, scope, purpose=None, *, satisfied_conditions=()) | Pure current decision; does not grant permission |
-| delegate_permission(delegated_by, grantee, resource, capability, purpose=None, *, expires_at=None, conditions=(), satisfied_conditions=(), causal_parents=()) | Requires active DELEGATE; host must bind actor |
+| delegate_permission(delegated_by, grantee, resource, capability, purpose=None, *, expires_at=None, conditions=(), satisfied_conditions=(), causal_parents=()) | Requires possessed capability plus DELEGATE, attenuated bounds and live ancestry; host must bind actor |
 | register_claim(actor, epistemic_type, content, *, derived_from=None, source_refs=None) | EpistemicType enum; OBSERVATION needs source_refs, inference/interpretation need derived_from |
 | dispute_claim(actor, claim_id, alternative) | Appends contestation; does not overwrite source |
 | grant_lifecycle_authority(granted_by, authority_holder), revoke_lifecycle_authority(actor, authority_holder) | Trusted bootstrap or active authority required |

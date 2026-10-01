@@ -1,4 +1,4 @@
-> HISTORICAL conceptual pre-implementation baseline. For the current operational contract use [specification 0.1.2](TRIA_OPERATIONAL_SPEC_v0.1.2.md).
+> HISTORICAL conceptual pre-implementation baseline. For the current operational contract use [specification 0.1.3](TRIA_OPERATIONAL_SPEC_v0.1.3.md).
 
 # TRIA Core Specification v0.1.1 — Pre-Implementation Baseline
 

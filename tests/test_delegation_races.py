@@ -10,6 +10,7 @@ def test_permission_delegation_requires_delegate_capability():
         rel.delegate_permission("agent:b", "agent:c", "resource:x", Capability.READ)
 
     rel.grant_permission("human:a", "agent:b", "resource:x", Capability.DELEGATE)
+    rel.grant_permission("human:a", "agent:b", "resource:x", Capability.READ)
     rel.delegate_permission("agent:b", "agent:c", "resource:x", Capability.READ)
 
     assert rel.check_capability("agent:c", "resource:x", Capability.READ).outcome is GovernanceOutcome.ALLOW

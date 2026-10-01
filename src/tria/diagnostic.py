@@ -18,7 +18,7 @@ from .version import __version__
 
 DIAGNOSTIC_REPORT_SCHEMA = "tria.diagnostic-report/0.2"
 DIAGNOSTIC_SPEC_VERSION = "0.2"
-OPERATIONAL_SPEC_VERSION = "0.1.2"
+OPERATIONAL_SPEC_VERSION = "0.1.3"
 
 
 @dataclass(frozen=True, slots=True)

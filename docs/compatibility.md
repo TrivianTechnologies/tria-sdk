@@ -1,40 +1,40 @@
-# Current compatibility contract
+# Alpha release-candidate compatibility contract
 
-Current prerelease: **0.1.0a6**, experimental alpha.
+Candidate 0.1.0a7: event schema 0.3; projection 0.6; replay bundle 0.1;
+operational specification 0.1.3; diagnostic interface 0.2; truth-integrity 0.1.
 
-- event schema: `0.2`
-- projection: `0.5`
-- replay bundle: `0.1`
-- operational specification: `0.1.2`
-- diagnostic interface: `0.2`
-- truth-integrity protocol: `0.1`
+Delegation semantics deliberately change from DELEGATE-only issuance to possessed,
+attenuated, continuously inherited capability grants. New events use 0.3 so older
+SDKs reject them rather than silently ignore authority ancestry. Projection 0.6
+retains grant event IDs and parent references. Prior 0.2 events and 0.5 replay bundles
+are not operationally accepted; no automatic migration is implemented. Preserve
+historical databases and hashes; inspect with their pinned original SDK read-only.
+Use a new store for this candidate. Do not edit version headers to force acceptance.
 
-The event envelope continues to separate invocation reservations and execution
-outcome semantics from the audited alpha. Projection 0.5 adds history validity and
-causal permission ambiguity and freezes nested state containers. Hash construction
-algorithm and bundle container shape are unchanged, and events remain schema 0.2.
+Replay **bundle format** remains 0.1; the incompatible 0.5 value above is the
+bundle's **projection version**, not its container format. Existing 0.1 containers
+are accepted only when their event-schema and projection envelopes are supported.
 
-The 0.1.0a6 diagnostic interface and truth-integrity assessment are read-only. They
-add no event types, do not alter projection or replay semantics, and do not create
-new governance authority. A `clear` diagnostic report and every recommended
-integrity response are descriptive only and never substitute for the final
-`ExecutionBridge` re-authorization check.
+Applications must replace DELEGATE-only fixtures with deliberately authorized
+capability + DELEGATE grants, provide explicit child expiry when a parent expires,
+and explicitly redelegate after parent replacement. This is a contract change,
+not a license to infer old participants' consent or reconstruct missing ancestry.
+Keep the original stores and event hashes intact. A future migration would require
+an independently reviewed design and fresh authorization decisions; none exists.
 
-Only this compatibility envelope is operationally supported. Old 0.1 events / 0.4
-bundles are rejected rather than silently reinterpreted. No automatic migration is
-provided. Keep historical data immutable and verify it using its pinned old SDK in
-an isolated read-only workflow. Use a separate new database for the remediated
-prerelease. Migration requires a separately reviewed explicit conversion preserving
-lineage; never edit historical hashes or version headers to make import pass.
+The playground uses fresh in-memory fixtures, plus a temporary SQLite database for
+the existing reference experience. It does not load durable user state. Its existing
+scenario/reference API shapes remain compatible; the authority walkthrough adds
+an optional empty-object endpoint. Old downloaded result records remain historical
+inspection evidence, never an import path or current authorization token.
 
-The frozen clean-room audit applies to **0.1.0a3 at
-463ce26b8af7d52d38796888cf5717948df1e331**, verdict NOT YET. It is not overwritten by
-new results. The 0.1.0a4 remediation evidence remains historical evidence for that
-candidate; 0.1.0a5 added a separate diagnostic surface. The 0.1.0a6 truth-integrity
-extension does not retroactively change prior audit claims. A tagged release, live provider support, production
-readiness and security certification are not implied.
+The diagnostic and integrity wire interfaces are unchanged but report the current
+operational version. Their results never authorize. This version has no private
+runtime dependencies and does not establish distributed freshness, remote atomicity
+or empirical alignment. Historical 0.1.0a3 audit and subsequent remediation records
+remain version-scoped evidence and are not overwritten.
 
-Current software licensing is **Mozilla Public License 2.0 (MPL-2.0)**. Documentation,
-specifications, diagrams, and research prose are licensed under **CC BY-SA 4.0** unless
-a specific file or third-party notice states otherwise. Consult `LICENSE.md`,
-`LICENSE-MPL-2.0.txt`, and `LICENSE-DOCUMENTATION.md` for controlling scope and terms.
+Software remains MPL-2.0 and documentation CC BY-SA 4.0 as specified by LICENSE.md.
+
+F033 is UNRESOLVED and blocks global/cross-store no-resurrection claims.
+See [the local authority boundary](agentic-alignment-contract.md#local-no-resurrection-and-unresolved-f033); no cross-store freshness service is included.

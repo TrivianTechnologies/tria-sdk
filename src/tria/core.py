@@ -139,28 +139,44 @@ class Relationship:
         }, causal_parents)
 
     def delegate_permission(self, delegated_by: str, grantee: str, resource: str, capability: Capability, purpose: str | None = None, *, expires_at: datetime | None = None, conditions: tuple[str, ...] = (), satisfied_conditions: tuple[str, ...] = (), causal_parents: tuple[str, ...] = ()) -> RelationalEvent:
+        """Delegate possessed authority with continuously validated ancestry.
+
+        A child must retain every parent's purpose, conditions and expiry ceiling.
+        This is the 0.1.3 operational contract, not the legacy DELEGATE-only rule.
+        """
         self._participant(delegated_by)
         self._participant(grantee)
+        text_field(resource, "resource")
         enum_field(capability, Capability, "capability")
+        if purpose is not None:
+            text_field(purpose, "purpose")
         conditions = conditions_field(conditions)
         satisfied_conditions = conditions_field(satisfied_conditions, "satisfied_conditions")
-        decision = self.check_capability(delegated_by, resource, Capability.DELEGATE, purpose=purpose, satisfied_conditions=satisfied_conditions)
-        self.record_governance_decision(
-            decision,
-            operation="delegate_permission",
-            grantee=delegated_by,
-            resource=resource,
-            capability=Capability.DELEGATE.value,
-            purpose=purpose,
-            satisfied_conditions=list(satisfied_conditions),
-        )
-        if decision.outcome is not GovernanceOutcome.ALLOW:
-            raise DelegationError(f"{delegated_by!r} cannot delegate permissions for {resource!r} without active DELEGATE authority for the requested purpose and conditions.")
-        return self._commit("PermissionGranted", delegated_by, {
-            "granted_by": delegated_by, "grantee": grantee, "resource": resource,
-            "capability": capability.value, "purpose": purpose,
-            "expires_at": _expiry_value(expires_at), "conditions": list(conditions), "delegated": True,
-        }, causal_parents)
+        expiry = _expiry_value(expires_at)
+        with self.execution_guard():
+            state = self.state
+            parents = []
+            for required in dict.fromkeys((capability, Capability.DELEGATE)):
+                decision = self.check_capability(delegated_by, resource, required,
+                    purpose=purpose, satisfied_conditions=satisfied_conditions)
+                if decision.outcome is not GovernanceOutcome.ALLOW:
+                    self.record_governance_decision(decision, operation="delegate_permission",
+                        grantee=delegated_by, resource=resource, capability=required.value)
+                    raise DelegationError(decision.reason)
+                parent = state.permissions[(delegated_by, resource, required)]
+                if (not set(parent.conditions).issubset(conditions)
+                    or parent.expires_at is not None and (expires_at is None or expires_at > parent.expires_at)
+                    or parent.purpose is not None and purpose != parent.purpose):
+                    raise DelegationError("Delegation cannot weaken inherited purpose, conditions or expiry.")
+                parents.append(parent.grant_event_id)
+            if self.state.last_event_id != state.last_event_id:
+                raise DelegationError("Authority changed during delegation evaluation; retry after review.")
+            return self._commit("PermissionGranted", delegated_by, {
+                "granted_by": delegated_by, "grantee": grantee, "resource": resource,
+                "capability": capability.value, "purpose": purpose,
+                "expires_at": expiry, "conditions": list(conditions), "delegated": True,
+                "parent_grant_ids": parents,
+            }, tuple(dict.fromkeys(causal_parents + tuple(parents))))
 
     def revoke_permission(self, actor: str, grantee: str, resource: str, capability: Capability, *, causal_parents: tuple[str, ...] = ()) -> RelationalEvent:
         self._participant(actor, system=True)

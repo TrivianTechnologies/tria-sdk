@@ -28,8 +28,9 @@ python playground/adapter.py
 Then open `http://127.0.0.1:8765/`.
 
 The adapter serves an exact allowlist of HTML pages (`/`, `/index.html`,
-`/before-with-tria.html`, `/evaluate.html`, `/evidence.html`), `GET /healthz`,
-and the allowlisted `POST /api/scenario` and `POST /api/reference` endpoints. The server binds to loopback by default and requires JSON for scenario requests.
+`/before-with-tria.html`, `/evaluate.html`, `/evidence.html`, `/agentic.html`), `GET /healthz`,
+and the allowlisted `POST /api/scenario`, `POST /api/reference`, and
+`POST /api/agentic` endpoints. The server binds to loopback by default and requires JSON for scenario requests.
 
 ## Trust boundary
 
@@ -87,3 +88,31 @@ Real relationship export remains a separate DISCLOSE-governed operation.
 The static public `/evaluate.html` explains how to run locally and does not
 fabricate SDK results. A local request failure remains an error. `/evidence.html`
 maps scoped claims to source/tests and links the independent reproduction protocol.
+
+## Authority and delegation walkthrough
+
+Open `/agentic.html` with the local adapter, or run
+`python playground/agentic_experience.py`. Eight fixed steps expose scoped grants,
+bounded delegation, rejected DELEGATE-only issuance, authorized local handoff,
+parent revocation, peer instructions, consensus, missing authority and a prepared
+ALLOW becoming stale. Exactly two local counter entries are expected. No external
+effects, private packages or live agents participate.
+
+`POST /api/agentic` accepts only `{}`. Every request creates fresh synthetic state;
+it cannot select actors, permissions, executors or arbitrary input. Its explicit
+projection includes principal/subject, capability/resource/purpose/conditions,
+expiry, exact grant references, parent activity, current decision and reason.
+Parent references are synthetic provenance, not reusable credentials. Source
+fingerprints identify evaluated bytes and do not authenticate their origin.
+
+The guarantee is **current local handoff authorization**. Review/reauthorize/abstain
+are suggested responses to the actual SDK BLOCK result. Static pages explain the
+walkthrough without fabricating SDK results; a failed local run stays an error.
+The ten-minute expiry is a demonstration parameter, not an empirical constant.
+Health retains the compatible `tria-playground-v0.2` identifier and adds the optional
+`agentic_experience` feature flag. Older adapters leave the new run button disabled.
+
+No stored-state migration is needed for these fresh fixtures. SDK 0.1.0a7 requires
+event schema 0.3 / projection 0.6; see [compatibility](../docs/compatibility.md).
+Run `python -m pytest tests/test_agentic_playground.py tests/test_agentic_alignment.py`
+and the full SDK suite. Hosted public execution remains a separately gated deployment.
