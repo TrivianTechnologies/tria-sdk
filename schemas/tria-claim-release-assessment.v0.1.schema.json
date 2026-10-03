@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://triviantechnologies.github.io/tria-sdk/schemas/tria-claim-release-assessment.v0.1.schema.json",
+  "title": "TRIA Claim Release Assessment v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema","claim_id","outcome","release_state","reasons","evidence_refs","missing_components","missing_disclosures","contestable","governance_effect"],
+  "properties": {
+    "schema": {"const": "tria.claim-release-assessment/0.1"},
+    "claim_id": {"type": "string", "minLength": 1},
+    "outcome": {"enum": ["RELEASE","WITHHELD_UNSUPPORTED","UNRESOLVED","WITHHELD_GOVERNED"]},
+    "release_state": {"enum": ["VERIFIED_FACT","STRUCTURAL_INFERENCE","SYMBOLIC_HYPOTHESIS","UNRESOLVED_UNKNOWN"]},
+    "reasons": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "evidence_refs": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "missing_components": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "missing_disclosures": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "contestable": {"const": true},
+    "governance_effect": {"const": "none"}
+  }
+}
