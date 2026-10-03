@@ -69,6 +69,22 @@ A conforming correction system SHOULD maintain dependency references from claims
 
 Dependency propagation is a v0.2 contract surface; automatic semantic discovery of every latent dependency is not claimed.
 
+### Dependency semantics
+
+The public reference operation `assess_correction_uptake` accepts an already assessed correction disposition and explicit dependency links.
+
+- `DERIVED_FROM` — the dependent representation was derived from the source and requires reevaluation when that source is warrantedly corrected.
+- `RELIES_ON` — the dependent plan, decision, summary, or claim materially relies on the source and requires reevaluation.
+- `CONTEXT_ONLY` — the source was contextually associated but is not represented as a necessary epistemic dependency; correction does not automatically invalidate it.
+
+For a `WARRANTED` correction, the reference operation returns the target plus all transitively reachable `DERIVED_FROM` and `RELIES_ON` dependents. Cycles terminate without duplicate effects. The result requires substantive reevaluation and explicitly records that acknowledgement is insufficient.
+
+For an `UNSUPPORTED` correction, the existing representation is preserved by this assessment. For an `UNRESOLVED` correction, the assessment recommends inquiry rather than overwrite.
+
+The operation remains read-only. `WARRANTED` is an input from a separate epistemic assessment, not a status created merely because a participant asserted a correction. Reevaluation likewise does not predetermine that every dependent must change: each dependent may be revised, withdrawn, superseded, or preserved with an attributable reason after reevaluation.
+
+This makes substantive uptake observable without turning correction into unilateral authority.
+
 ## Required disclosure contracts
 
 Bounded workflows MAY declare mandatory disclosure fields such as:
