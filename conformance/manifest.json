@@ -51,7 +51,13 @@
     "explicit_unknown_effect",
     "delegation_requires_possessed_capability",
     "delegation_bounds_do_not_expand",
-    "delegation_ancestry_current_at_consequence"
+    "delegation_ancestry_current_at_consequence",
+    "claim_release_requires_attested_support",
+    "composite_claim_inherits_weakest_required_component",
+    "correction_uptake_requires_current_act_authority",
+    "warranted_correction_changes_claim_state",
+    "correction_propagation_exact_set_recomputed",
+    "integrity_evidence_inspection_requires_read"
   ],
   "fixtures": [
     "fixtures/persistence_replay.json",
@@ -74,6 +80,7 @@
     "fixtures/runtime_governance_consistency.json",
     "fixtures/deep_immutability.json",
     "fixtures/truth_integrity_v0.1.json",
-    "fixtures/agentic_alignment_v0.1.json"
+    "fixtures/agentic_alignment_v0.1.json",
+    "fixtures/claim_release_v0.2.json"
   ]
 }
