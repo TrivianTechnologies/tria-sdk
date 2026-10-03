@@ -49,7 +49,7 @@ def test_governed_uptake_requires_actor_act_authority():
         warranted(source),
         (DependencyLink(source, summary, DependencyKind.DERIVED_FROM),),
     )
-    receipt = apply_correction_uptake(rel, "agent:b", assessment)
+    receipt = apply_correction_uptake(rel, "agent:b", warranted(source), (DependencyLink(source, summary, DependencyKind.DERIVED_FROM),), assessment)
     assert receipt.outcome is GovernanceOutcome.BLOCK
     assert rel.state.claims[source].status.value == "ACTIVE"
     assert rel.state.claims[summary].status.value == "ACTIVE"
@@ -62,7 +62,7 @@ def test_governed_uptake_marks_target_and_dependents_for_reevaluation():
         warranted(source),
         (DependencyLink(source, summary, DependencyKind.DERIVED_FROM),),
     )
-    receipt = apply_correction_uptake(rel, "agent:b", assessment)
+    receipt = apply_correction_uptake(rel, "agent:b", warranted(source), (DependencyLink(source, summary, DependencyKind.DERIVED_FROM),), assessment)
     assert receipt.outcome is GovernanceOutcome.ALLOW
     assert receipt.affected_refs == (source, summary)
     assert rel.state.claims[source].status.value == "CONTESTED"
@@ -76,7 +76,7 @@ def test_uptake_writes_attributable_immutable_receipt_events():
         warranted(source),
         (DependencyLink(source, summary, DependencyKind.DERIVED_FROM),),
     )
-    receipt = apply_correction_uptake(rel, "agent:b", assessment)
+    receipt = apply_correction_uptake(rel, "agent:b", warranted(source), (DependencyLink(source, summary, DependencyKind.DERIVED_FROM),), assessment)
     events = [e for e in rel.events if e.event_type == "CorrectionUptakeApplied"]
     assert len(events) == 1
     assert events[0].actor_id == "agent:b"
@@ -94,7 +94,7 @@ def test_non_reevaluation_assessment_cannot_mutate_state():
         ),
         (),
     )
-    receipt = apply_correction_uptake(rel, "agent:b", unsupported)
+    receipt = apply_correction_uptake(rel, "agent:b", CorrectionEvidence("correction:2", source, "human:a", ("record:x",), CorrectionDisposition.UNSUPPORTED), (), unsupported)
     assert receipt.outcome is GovernanceOutcome.BLOCK
     assert not [e for e in rel.events if e.event_type == "CorrectionUptakeApplied"]
 
@@ -113,5 +113,5 @@ def test_caller_cannot_expand_affected_refs_beyond_assessment():
         assessment.evidence_refs,
         True,
     )
-    receipt = apply_correction_uptake(rel, "agent:b", forged)
+    receipt = apply_correction_uptake(rel, "agent:b", warranted(source), (), forged)
     assert receipt.outcome is GovernanceOutcome.BLOCK
