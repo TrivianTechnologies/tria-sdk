@@ -1,0 +1,36 @@
+{
+  "schema": "tria.claim-release-conformance/0.1",
+  "cases": [
+    {
+      "id": "verified-single-component",
+      "requested_state": "VERIFIED_FACT",
+      "components": [{"component_id":"c1","evidence_refs":["e1"]}],
+      "attestations": [{"evidence_id":"e1","subject_ref":"c1","verdict":"SUPPORTS"}],
+      "expected_outcome": "RELEASE"
+    },
+    {
+      "id": "unknown-evidence-withheld",
+      "requested_state": "VERIFIED_FACT",
+      "components": [{"component_id":"c1","evidence_refs":["missing"]}],
+      "attestations": [],
+      "expected_outcome": "WITHHELD_UNSUPPORTED"
+    },
+    {
+      "id": "composite-weakest-link",
+      "requested_state": "VERIFIED_FACT",
+      "components": [
+        {"component_id":"c1","evidence_refs":["e1"]},
+        {"component_id":"c2","evidence_refs":["e2"]}
+      ],
+      "attestations": [{"evidence_id":"e1","subject_ref":"c1","verdict":"SUPPORTS"}],
+      "expected_outcome": "WITHHELD_UNSUPPORTED"
+    },
+    {
+      "id": "explicit-unknown-releases-as-unknown",
+      "requested_state": "UNRESOLVED_UNKNOWN",
+      "components": [{"component_id":"c1","evidence_refs":[]}],
+      "attestations": [],
+      "expected_outcome": "RELEASE"
+    }
+  ]
+}
