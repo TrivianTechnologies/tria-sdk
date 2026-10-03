@@ -1,7 +1,7 @@
 {
   "manifest_schema": "tria.machine-manifest/0.1",
   "manifest_status": "experimental",
-  "last_verified_against_repository": "2026-10-01",
+  "last_verified_against_repository": "2026-10-02",
   "project": {
     "name": "TRIA SDK",
     "expanded_name": "Trivian Relational Intelligence Architecture SDK",
@@ -30,12 +30,13 @@
     "tria_core_operational_spec": "0.1.3",
     "diagnostic_interface": "0.2",
     "diagnostic_report_schema": "0.2",
-    "truth_integrity_protocol": "0.1",
+    "truth_integrity_protocol": "0.1 classification + 0.2 claim release/correction",
     "truth_integrity_assessment_schema": "0.1",
     "event_schema": "0.3",
     "projection": "0.6",
     "replay_bundle": "0.1",
-    "python": ">=3.11"
+    "python": ">=3.11",
+    "claim_release_assessment_schema": "0.1"
   },
   "architectural_invariants": [
     "Events are immutable.",
@@ -47,19 +48,66 @@
     "A diagnostic clear result is not an execution authorization token."
   ],
   "canonical_contracts": [
-    {"path": "docs/TRIA_OPERATIONAL_SPEC_v0.1.3.md", "role": "current operational contract"},
-    {"path": "docs/TRIA_DIAGNOSTIC_INTERFACE_v0.2.md", "role": "read-only machine-facing diagnostic contract"},
-    {"path": "docs/TRIA_TRUTH_INTEGRITY_PROTOCOL_v0.1.md", "role": "truth-integrity evidence and classification contract"},
-    {"path": "schemas/tria-diagnostic-report.v0.2.schema.json", "role": "diagnostic report wire schema"},
-    {"path": "schemas/tria-truth-integrity-assessment.v0.1.schema.json", "role": "truth-integrity assessment wire schema"},
-    {"path": "docs/modularity-and-trust.md", "role": "trusted-host boundary"},
-    {"path": "docs/execution-bridge.md", "role": "final governed execution handoff"},
-    {"path": "docs/compatibility.md", "role": "compatibility and fail-closed version handling"},
-    {"path": "conformance/manifest.json", "role": "required semantics and conformance fixtures"},
-    {"path": "docs/api-reference.md", "role": "public developer API"},
-    {"path": "LICENSE.md", "role": "licensing scope and provenance notice"},
-    {"path": "LICENSE-MPL-2.0.txt", "role": "controlling software license legal text"},
-    {"path": "LICENSE-DOCUMENTATION.md", "role": "documentation and research-material license notice"}
+    {
+      "path": "docs/TRIA_OPERATIONAL_SPEC_v0.1.3.md",
+      "role": "current operational contract"
+    },
+    {
+      "path": "docs/TRIA_DIAGNOSTIC_INTERFACE_v0.2.md",
+      "role": "read-only machine-facing diagnostic contract"
+    },
+    {
+      "path": "docs/TRIA_TRUTH_INTEGRITY_PROTOCOL_v0.1.md",
+      "role": "truth-integrity evidence and classification contract"
+    },
+    {
+      "path": "docs/TRIA_TRUTH_INTEGRITY_PROTOCOL_v0.2.md",
+      "role": "claim release, correction uptake and evidence inspection contract"
+    },
+    {
+      "path": "schemas/tria-claim-release-assessment.v0.1.schema.json",
+      "role": "claim release assessment wire schema"
+    },
+    {
+      "path": "schemas/tria-diagnostic-report.v0.2.schema.json",
+      "role": "diagnostic report wire schema"
+    },
+    {
+      "path": "schemas/tria-truth-integrity-assessment.v0.1.schema.json",
+      "role": "truth-integrity assessment wire schema"
+    },
+    {
+      "path": "docs/modularity-and-trust.md",
+      "role": "trusted-host boundary"
+    },
+    {
+      "path": "docs/execution-bridge.md",
+      "role": "final governed execution handoff"
+    },
+    {
+      "path": "docs/compatibility.md",
+      "role": "compatibility and fail-closed version handling"
+    },
+    {
+      "path": "conformance/manifest.json",
+      "role": "required semantics and conformance fixtures"
+    },
+    {
+      "path": "docs/api-reference.md",
+      "role": "public developer API"
+    },
+    {
+      "path": "LICENSE.md",
+      "role": "licensing scope and provenance notice"
+    },
+    {
+      "path": "LICENSE-MPL-2.0.txt",
+      "role": "controlling software license legal text"
+    },
+    {
+      "path": "LICENSE-DOCUMENTATION.md",
+      "role": "documentation and research-material license notice"
+    }
   ],
   "capabilities": [
     "immutable relational events",
@@ -96,7 +144,12 @@
     "read-only diagnostic reports through tria.diagnose",
     "separation of enforced governance findings from advisory or derived diagnostic signals",
     "explicit diagnostic unknowns for absent trusted-host evidence",
-    "schema-validatable diagnostic wire output"
+    "schema-validatable diagnostic wire output",
+    "pre-release evidence contract for candidate claims",
+    "composite claim weakest-link enforcement",
+    "substantive correction dependency propagation",
+    "governed correction uptake with immutable receipt",
+    "participant evidence inspection under READ authority"
   ],
   "governance_floors": [
     "consent and permission remain distinct",
@@ -113,7 +166,11 @@
     "truth-integrity assessments remain claim-scoped attributable contestable and revisable",
     "recommended integrity responses do not create enforcement authority",
     "missing host facts remain explicit unknowns rather than inferred truths",
-    "a prior diagnostic clear result never bypasses final execution re-authorization"
+    "a prior diagnostic clear result never bypasses final execution re-authorization",
+    "claim release assessment does not create truth authority",
+    "correction warrant does not create execution authority",
+    "governed correction application requires current ACT authority",
+    "participant evidence inspection requires READ and does not imply DISCLOSE"
   ],
   "trusted_host_responsibilities": [
     "real-world actor authentication",
@@ -155,7 +212,17 @@
     "test_root": "tests",
     "conformance_root": "conformance",
     "schemas_root": "schemas",
-    "primary_entrypoints": ["Tria", "Relationship", "diagnose", "assess_truth_integrity", "ExecutionBridge.execute"],
+    "primary_entrypoints": [
+      "Tria",
+      "Relationship",
+      "diagnose",
+      "assess_truth_integrity",
+      "ExecutionBridge.execute",
+      "assess_claim_release",
+      "assess_correction_uptake",
+      "apply_correction_uptake",
+      "inspect_truth_integrity_evidence"
+    ],
     "diagnostic": {
       "module": "src/tria/diagnostic.py",
       "operation": "diagnose",
@@ -175,7 +242,19 @@
       "contestable": true,
       "creates_governance_authority": false
     },
-    "provider_adapters": ["OpenAI Responses-style translator", "Anthropic Messages-style translator"]
+    "provider_adapters": [
+      "OpenAI Responses-style translator",
+      "Anthropic Messages-style translator"
+    ],
+    "truth_integrity_v0_2": {
+      "specification": "docs/TRIA_TRUTH_INTEGRITY_PROTOCOL_v0.2.md",
+      "release_operation": "assess_claim_release",
+      "correction_assessment": "assess_correction_uptake",
+      "governed_application": "apply_correction_uptake",
+      "participant_inspection": "inspect_truth_integrity_evidence",
+      "claim_release_schema": "schemas/tria-claim-release-assessment.v0.1.schema.json",
+      "creates_truth_authority": false
+    }
   },
   "verification": {
     "install": "python -m pip install -e '.[dev]'",
@@ -185,7 +264,13 @@
     "diagnostic_schema": "schemas/tria-diagnostic-report.v0.2.schema.json",
     "truth_integrity_tests": "tests/test_truth_integrity.py",
     "truth_integrity_schema": "schemas/tria-truth-integrity-assessment.v0.1.schema.json",
-    "interpretation": "Passing tests establishes encoded behavior under tested conditions only."
+    "interpretation": "Passing tests establishes encoded behavior under tested conditions only.",
+    "claim_release_tests": "tests/test_claim_release.py",
+    "correction_tests": [
+      "tests/test_correction_uptake.py",
+      "tests/test_governed_correction_uptake.py"
+    ],
+    "inspection_tests": "tests/test_integrity_inspection.py"
   },
   "conformance": {
     "manifest": "conformance/manifest.json",
@@ -193,17 +278,44 @@
     "historical_adversarial_failures_preserved": true
   },
   "related_repositories": [
-    {"name": "TRIA architecture", "url": "https://github.com/TrivianTechnologies/trivian-relational-intelligence-architecture"},
-    {"name": "Syzygy Rosetta Protocol", "url": "https://github.com/TrivianTechnologies/syzygy-rosetta-protocol"},
-    {"name": "Coheronmetry", "url": "https://github.com/TrivianTechnologies/Coheronmetry"},
-    {"name": "Orthogonal Signal", "url": "https://github.com/TrivianTechnologies/Orthogonal-signal"},
-    {"name": "Trivian Resonance Lattice", "url": "https://github.com/TrivianTechnologies/Trivian-resonance-lattice"},
-    {"name": "TRIA Diachronic Sovereignty", "url": "https://github.com/TrivianTechnologies/tria-diachronic-sovereignty"},
-    {"name": "Trivian AI Resonance Key", "url": "https://github.com/TrivianTechnologies/Trivian-ai-resonance-key"}
+    {
+      "name": "TRIA architecture",
+      "url": "https://github.com/TrivianTechnologies/trivian-relational-intelligence-architecture"
+    },
+    {
+      "name": "Syzygy Rosetta Protocol",
+      "url": "https://github.com/TrivianTechnologies/syzygy-rosetta-protocol"
+    },
+    {
+      "name": "Coheronmetry",
+      "url": "https://github.com/TrivianTechnologies/Coheronmetry"
+    },
+    {
+      "name": "Orthogonal Signal",
+      "url": "https://github.com/TrivianTechnologies/Orthogonal-signal"
+    },
+    {
+      "name": "Trivian Resonance Lattice",
+      "url": "https://github.com/TrivianTechnologies/Trivian-resonance-lattice"
+    },
+    {
+      "name": "TRIA Diachronic Sovereignty",
+      "url": "https://github.com/TrivianTechnologies/tria-diachronic-sovereignty"
+    },
+    {
+      "name": "Trivian AI Resonance Key",
+      "url": "https://github.com/TrivianTechnologies/Trivian-ai-resonance-key"
+    }
   ],
   "machine_discovery": {
-    "agents_md": {"status": "implemented", "path": "AGENTS.md"},
-    "ecosystem_llms_txt": {"status": "implemented", "url": "https://trivianfield.com/llms.txt"},
+    "agents_md": {
+      "status": "implemented",
+      "path": "AGENTS.md"
+    },
+    "ecosystem_llms_txt": {
+      "status": "implemented",
+      "url": "https://trivianfield.com/llms.txt"
+    },
     "diagnostic_interface": {
       "status": "implemented",
       "operation": "tria.diagnose",
@@ -218,9 +330,26 @@
       "specification": "docs/TRIA_TRUTH_INTEGRITY_PROTOCOL_v0.1.md",
       "schema": "schemas/tria-truth-integrity-assessment.v0.1.schema.json"
     },
-    "mcp": {"status": "planned"},
-    "a2a": {"status": "planned"},
-    "unknown_unknown_evaluations": {"status": "planned"}
+    "mcp": {
+      "status": "planned"
+    },
+    "a2a": {
+      "status": "planned"
+    },
+    "unknown_unknown_evaluations": {
+      "status": "planned"
+    },
+    "truth_integrity_v0_2": {
+      "status": "implemented",
+      "specification": "docs/TRIA_TRUTH_INTEGRITY_PROTOCOL_v0.2.md",
+      "operations": [
+        "tria.assess_claim_release",
+        "tria.assess_correction_uptake",
+        "tria.apply_correction_uptake",
+        "tria.inspect_truth_integrity_evidence"
+      ],
+      "schema": "schemas/tria-claim-release-assessment.v0.1.schema.json"
+    }
   },
   "licensing": {
     "model": "open-source / open-knowledge",
@@ -234,7 +363,11 @@
     "sharealike_required_for_documentation_adaptations": true,
     "trademark_rights_granted": false,
     "certification_rights_granted": false,
-    "controlling_files": ["LICENSE.md", "LICENSE-MPL-2.0.txt", "LICENSE-DOCUMENTATION.md"]
+    "controlling_files": [
+      "LICENSE.md",
+      "LICENSE-MPL-2.0.txt",
+      "LICENSE-DOCUMENTATION.md"
+    ]
   },
   "machine_use": {
     "indexing_permitted_subject_to_license": true,

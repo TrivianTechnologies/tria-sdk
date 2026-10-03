@@ -1,7 +1,7 @@
 # Alpha release-candidate compatibility contract
 
 Candidate 0.1.0a7: event schema 0.3; projection 0.6; replay bundle 0.1;
-operational specification 0.1.3; diagnostic interface 0.2; truth-integrity 0.1.
+operational specification 0.1.3; diagnostic interface 0.2; truth-integrity classification 0.1; additive claim-release/correction protocol 0.2.
 
 Delegation semantics deliberately change from DELEGATE-only issuance to possessed,
 attenuated, continuously inherited capability grants. New events use 0.3 so older
@@ -28,8 +28,16 @@ scenario/reference API shapes remain compatible; the authority walkthrough adds
 an optional empty-object endpoint. Old downloaded result records remain historical
 inspection evidence, never an import path or current authorization token.
 
-The diagnostic and integrity wire interfaces are unchanged but report the current
-operational version. Their results never authorize. This version has no private
+The diagnostic and v0.1 integrity wire interfaces remain unchanged. Truth-Integrity
+v0.2 adds a claim-release assessment schema and public correction/inspection surfaces
+without changing event schema or projection version. Governed correction application
+uses existing ClaimDisputed events plus an auditable CorrectionUptakeApplied event
+that is intentionally projection-neutral; older compatible projections preserve the
+event in history even when they do not interpret it as additional state.
+
+Participant evidence inspection uses existing READ authority on the dedicated
+truth-integrity:evidence resource. It does not imply DISCLOSE and does not authenticate
+external evidence. The v0.2 surfaces report the current operational version. Their results never authorize. This version has no private
 runtime dependencies and does not establish distributed freshness, remote atomicity
 or empirical alignment. Historical 0.1.0a3 audit and subsequent remediation records
 remain version-scoped evidence and are not overwritten.

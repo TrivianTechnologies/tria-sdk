@@ -29,6 +29,10 @@ application](complete-governed-application.md) before advanced composition.
 | IntegrityEvidence(kind, claim_refs, source_refs) | Attributable claim-linked evidence; source references provide traceability, not proof of truth or intent |
 | assess_truth_integrity(relationship, claim_id, evidence=()) | Pure claim-scoped assessment distinguishing error, uncertainty, contradiction, probable deception, and repeated adversarial manipulation |
 | IntegrityAssessment.to_dict() | JSON-friendly result matching `schemas/tria-truth-integrity-assessment.v0.1.schema.json`; response is advisory and contestable |
+| assess_claim_release(candidate, attestations=(), *, trusted_issuers=()) | Pure pre-release evidence-contract assessment; factual/inferential release requires matching support from an explicitly trusted host-bound issuer and composite claims inherit the weakest required component |
+| assess_correction_uptake(correction, dependencies=()) | Pure dependency assessment; warranted correction identifies target plus transitive DERIVED_FROM / RELIES_ON reevaluation set |
+| apply_correction_uptake(relationship, actor, correction, dependencies=(), assessment=None) | Governed mutation path; recomputes exact propagation, requires ACT on truth-integrity:corrections, contests affected canonical claims and appends an immutable receipt |
+| inspect_truth_integrity_evidence(relationship, actor, claim_id, evidence_refs=()) | Governed participant inspection; requires READ on truth-integrity:evidence; does not grant DISCLOSE or authenticate external sources |
 | diagnose(relationship, request, observations=(), *, integrity_evidence=()) | Pure read-only inspection; returns DiagnosticReport using Runtime.evaluate for encoded governance checks and optional claim-scoped integrity evidence; `clear` is not an authorization token |
 | DiagnosticReport.to_dict() | JSON-friendly report matching `schemas/tria-diagnostic-report.v0.2.schema.json` |
 | Runtime(resource_resolver=None).prepare(relationship, request) | Returns InvocationPlan; authorized context only; no executor |
@@ -55,7 +59,7 @@ The initial attributable observation types are `host_authentication`,
 governance effect. Hosts remain responsible for authentication, external truth, and
 the meaning of supplied evidence.
 
-The separate [Truth-Integrity Protocol v0.1](TRIA_TRUTH_INTEGRITY_PROTOCOL_v0.1.md)
+Truth-Integrity Protocol v0.1 remains the deception-classification contract. The additive [Truth-Integrity Protocol v0.2](TRIA_TRUTH_INTEGRITY_PROTOCOL_v0.2.md) defines pre-release evidence contracts, correction uptake, and governed inspection. The separate [Truth-Integrity Protocol v0.1](TRIA_TRUTH_INTEGRITY_PROTOCOL_v0.1.md)
 defines `IntegrityEvidence`, the deterministic reference classification, and
 proportional response vocabulary. Contradiction alone is insufficient for probable
 deception. Even a probable-deception result is an evidence-backed, contestable

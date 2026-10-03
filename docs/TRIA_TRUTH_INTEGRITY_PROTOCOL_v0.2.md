@@ -49,6 +49,8 @@ An attestation has:
 
 The generator may cite an evidence ID. It cannot create governance authority merely by emitting an attestation-shaped object.
 
+The reference `assess_claim_release` operation requires an explicit host-bound `trusted_issuers` set for factual or inferential release. Attestations whose `issued_by` value is absent from that set cannot support release. If no trusted issuer contract is supplied, factual/inferential release fails closed. The identifier binding is still only as trustworthy as the host that supplies it; cryptographic or process-isolated issuer authentication remains a deployment responsibility.
+
 ## Composite claims
 
 A candidate claim may depend on one or more atomic components. A composite may not receive greater factual warrant than any required component.

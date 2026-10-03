@@ -98,8 +98,8 @@ class ClaimReleaseAssessment:
     governance_effect: str = "none"
 
 
-def _support_for(component, attestations):
-    referenced = [item for item in attestations if item.evidence_id in component.evidence_refs]
+def _support_for(component, attestations, trusted_issuers):
+    referenced = [item for item in attestations if item.evidence_id in component.evidence_refs and item.issued_by in trusted_issuers]
     valid = [
         item for item in referenced
         if item.subject_ref == component.component_id
@@ -115,11 +115,10 @@ def _support_for(component, attestations):
     return valid, adverse
 
 
-def assess_claim_release(candidate: CandidateClaim, attestations=()) -> ClaimReleaseAssessment:
+def assess_claim_release(candidate: CandidateClaim, attestations=(), *, trusted_issuers=()) -> ClaimReleaseAssessment:
     """Assess whether represented evidence permits the requested epistemic release state.
 
-    This pure reference operation validates a represented evidence contract. It does
-    not authenticate the host, establish metaphysical truth, or infer deceptive intent.
+    This pure reference operation validates a represented evidence contract against an explicit host-bound trusted issuer set. It does not authenticate the host itself, establish metaphysical truth, or infer deceptive intent.
     """
     if not isinstance(candidate, CandidateClaim):
         raise InputValidationError("candidate must be a CandidateClaim.")
@@ -128,6 +127,11 @@ def assess_claim_release(candidate: CandidateClaim, attestations=()) -> ClaimRel
     attestations = tuple(attestations)
     if any(not isinstance(item, EvidenceAttestation) for item in attestations):
         raise InputValidationError("attestations must contain EvidenceAttestation values.")
+    if not isinstance(trusted_issuers, (list, tuple, set, frozenset)):
+        raise InputValidationError("trusted_issuers must be a sequence or set of host-bound issuer identifiers.")
+    trusted_issuers = frozenset(trusted_issuers)
+    for issuer in trusted_issuers:
+        text_field(issuer, "trusted_issuer")
     ids = [item.evidence_id for item in attestations]
     if len(ids) != len(set(ids)):
         raise InputValidationError("evidence_id values must be unique.")
@@ -156,7 +160,7 @@ def assess_claim_release(candidate: CandidateClaim, attestations=()) -> ClaimRel
     for component in candidate.components:
         if not component.required:
             continue
-        support, adverse = _support_for(component, attestations)
+        support, adverse = _support_for(component, attestations, trusted_issuers)
         if adverse or not support:
             missing.append(component.component_id)
         used.extend(item.evidence_id for item in support)
