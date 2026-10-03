@@ -57,7 +57,8 @@
     "correction_uptake_requires_current_act_authority",
     "warranted_correction_changes_claim_state",
     "correction_propagation_exact_set_recomputed",
-    "integrity_evidence_inspection_requires_read"
+    "integrity_evidence_inspection_requires_read",
+    "claim_release_rejects_untrusted_attestation_issuers"
   ],
   "fixtures": [
     "fixtures/persistence_replay.json",
