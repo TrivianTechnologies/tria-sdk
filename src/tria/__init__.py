@@ -59,6 +59,11 @@ from .differentiation import (
 from .events import EventProposal, RelationalEvent, verify_event_chain
 from .execution import ExecutionBridge, ExecutionReceipt, Executor
 from .governance import GovernanceEngine, Policy, PolicyAdoption
+from .inspection import (
+    EVIDENCE_RESOURCE,
+    EvidenceInspection,
+    inspect_truth_integrity_evidence,
+)
 from .portable import (
     BUNDLE_FORMAT_VERSION,
     BundleVerification,
@@ -123,7 +128,7 @@ __all__ = [
     "AnthropicMessagesAdapter", "AttributableObservation", "BUNDLE_FORMAT_VERSION", "BundleVerification", "Capability", "CapabilityRequirement",
     "AttestationVerdict", "CandidateClaim", "CORRECTION_RESOURCE", "CORRECTION_UPTAKE_SCHEMA", "Claim", "ClaimComponent", "ClaimHandle", "ClaimReleaseAssessment", "ClaimStatus", "CompatibilityReport", "ConsentRecord", "ConsentRequirement", "CorrectionApplicationReceipt", "CorrectionDisposition", "CorrectionEvidence", "CorrectionUptakeAssessment", "ContextItem",
     "CrossBoundaryGovernanceError", "CURRENT_BUNDLE_FORMAT_VERSION", "CURRENT_EVENT_SCHEMA_VERSION", "CURRENT_PROJECTION_VERSION",
-    "DelegationError", "DependencyKind", "DependencyLink", "DiagnosticReport", "DifferentiationObservation", "DisclosureHandle", "EpistemicAdmissionError", "EpistemicReleaseState", "EpistemicType", "EvidenceAttestation", "EventProposal", "EventStore",
+    "DelegationError", "DependencyKind", "DependencyLink", "DiagnosticReport", "DifferentiationObservation", "DisclosureHandle", "EVIDENCE_RESOURCE", "EpistemicAdmissionError", "EpistemicReleaseState", "EvidenceInspection", "EpistemicType", "EvidenceAttestation", "EventProposal", "EventStore",
     "ExecutionBridge", "ExecutionReceipt", "Executor", "GenerativeCondition", "GovernanceDecision", "GovernanceEngine", "GovernanceOutcome",
     "InMemoryEventStore", "IntegrityAssessment", "IntegrityCondition", "IntegrityEvidence", "IntegrityEvidenceKind", "IntegrityResponse", "IntentStatus", "InvocationPlan", "InvocationRequest", "InvocationResult", "LifecycleAuthorityError",
     "LifecycleAuthorityRecord", "LifecycleState", "LifecycleTransitionError", "OpenAIResponsesAdapter", "PermissionRecord",
@@ -132,6 +137,6 @@ __all__ = [
     "ReconsentRequirement", "ReleaseOutcome", "RelationalEvent", "RelationalState", "Relationship", "ReplayBundle", "ReplayExportError", "ReplayImportError",
     "Runtime", "SQLiteEventStore", "SchemaCompatibilityError", "CLAIM_RELEASE_SCHEMA", "CLAIM_RELEASE_SPEC_VERSION", "TRUTH_INTEGRITY_SCHEMA", "TRUTH_INTEGRITY_SPEC_VERSION", "Tria", "__version__", "admit_disclosure",
     "apply_correction_uptake", "assess_claim_release", "assess_correction_uptake", "assess_generative_condition", "assess_truth_integrity", "check_compatibility", "check_event_schema", "derive_from_disclosure", "diagnose", "disclose_reference", "export_replay_bundle",
-    "import_replay_bundle", "projection_digest", "record_differentiation_observation", "replay_export_resource",
+    "import_replay_bundle", "inspect_truth_integrity_evidence", "projection_digest", "record_differentiation_observation", "replay_export_resource",
     "require_supported_compatibility", "require_supported_event_schema", "state_to_dict", "verify_event_chain", "verify_replay_bundle",
 ]
