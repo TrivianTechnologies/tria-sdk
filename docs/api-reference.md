@@ -29,7 +29,7 @@ application](complete-governed-application.md) before advanced composition.
 | IntegrityEvidence(kind, claim_refs, source_refs) | Attributable claim-linked evidence; source references provide traceability, not proof of truth or intent |
 | assess_truth_integrity(relationship, claim_id, evidence=()) | Pure claim-scoped assessment distinguishing error, uncertainty, contradiction, probable deception, and repeated adversarial manipulation |
 | IntegrityAssessment.to_dict() | JSON-friendly result matching `schemas/tria-truth-integrity-assessment.v0.1.schema.json`; response is advisory and contestable |
-| assess_claim_release(candidate, attestations=()) | Pure pre-release evidence-contract assessment; factual release requires matching host-issued support and composite claims inherit the weakest required component |
+| assess_claim_release(candidate, attestations=(), *, trusted_issuers=()) | Pure pre-release evidence-contract assessment; factual/inferential release requires matching support from an explicitly trusted host-bound issuer and composite claims inherit the weakest required component |
 | assess_correction_uptake(correction, dependencies=()) | Pure dependency assessment; warranted correction identifies target plus transitive DERIVED_FROM / RELIES_ON reevaluation set |
 | apply_correction_uptake(relationship, actor, correction, dependencies=(), assessment=None) | Governed mutation path; recomputes exact propagation, requires ACT on truth-integrity:corrections, contests affected canonical claims and appends an immutable receipt |
 | inspect_truth_integrity_evidence(relationship, actor, claim_id, evidence_refs=()) | Governed participant inspection; requires READ on truth-integrity:evidence; does not grant DISCLOSE or authenticate external sources |
