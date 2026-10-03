@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from .correction import CorrectionUptakeAssessment, PropagationAction
+from .correction import CorrectionEvidence, CorrectionUptakeAssessment, DependencyLink, PropagationAction, assess_correction_uptake
 from .errors import InputValidationError
 from .types import Capability, GovernanceOutcome
 
@@ -20,15 +20,30 @@ class CorrectionApplicationReceipt:
     event_id: str | None = None
 
 
-def apply_correction_uptake(relationship, actor: str, assessment: CorrectionUptakeAssessment):
+def apply_correction_uptake(relationship, actor: str, correction: CorrectionEvidence, dependencies=(), assessment: CorrectionUptakeAssessment | None = None):
     """Apply a warranted reevaluation set through ordinary TRIA ACT authority.
 
     This operation does not decide that a correction is warranted and does not
     rewrite claim content. It moves existing affected claims into a contested
     reevaluation state and records an attributable immutable receipt.
     """
+    if not isinstance(correction, CorrectionEvidence):
+        raise InputValidationError("correction must be CorrectionEvidence.")
+    if not isinstance(dependencies, (list, tuple)) or any(not isinstance(item, DependencyLink) for item in dependencies):
+        raise InputValidationError("dependencies must contain DependencyLink values.")
+    canonical = assess_correction_uptake(correction, tuple(dependencies))
+    if assessment is None:
+        assessment = canonical
     if not isinstance(assessment, CorrectionUptakeAssessment):
         raise InputValidationError("assessment must be CorrectionUptakeAssessment.")
+    if assessment != canonical:
+        return CorrectionApplicationReceipt(
+            correction.correction_id,
+            actor,
+            GovernanceOutcome.BLOCK,
+            (),
+            "Supplied assessment does not match deterministic correction propagation for the supplied correction and dependencies.",
+        )
 
     relationship._participant(actor)
     decision = relationship.check_capability(actor, CORRECTION_RESOURCE, Capability.ACT)
@@ -57,29 +72,7 @@ def apply_correction_uptake(relationship, actor: str, assessment: CorrectionUpta
             "Only a substantive REEVALUATE assessment rooted at its correction target may mutate claim state.",
         )
 
-    # The assessment is a value object, not an authority token. Require every
-    # affected ref to be either the target or an existing claim with an explicit
-    # provenance path back to another affected claim. This prevents arbitrary
-    # blast-radius expansion by constructing a forged assessment.
-    state = relationship.state
-    allowed = {assessment.target_ref}
-    pending = list(assessment.affected_refs[1:])
-    while pending:
-        progressed = False
-        for ref in tuple(pending):
-            claim = state.claims.get(ref)
-            if claim is not None and set(claim.derived_from).intersection(allowed):
-                allowed.add(ref)
-                pending.remove(ref)
-                progressed = True
-        if not progressed:
-            return CorrectionApplicationReceipt(
-                assessment.correction_id,
-                actor,
-                GovernanceOutcome.BLOCK,
-                (),
-                "Affected refs contain a claim without an explicit provenance path from the correction target.",
-            )
+    # Recomputed exact assessment above prevents caller expansion or shrinkage.
 
     causal = []
     for ref in assessment.affected_refs:
