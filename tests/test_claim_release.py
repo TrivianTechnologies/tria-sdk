@@ -39,7 +39,7 @@ def component(component_id, *evidence_ids, version_ref=None):
 
 def test_verified_fact_requires_independent_support():
     claim = candidate(component("tests-passed", "ev:tests"))
-    result = assess_claim_release(claim, (attestation("ev:tests", "tests-passed",), trusted_issuers=("host:verifier",))
+    result = assess_claim_release(claim, (attestation("ev:tests", "tests-passed"),), trusted_issuers=("host:verifier",))
     assert result.outcome is ReleaseOutcome.RELEASE
     assert result.release_state is EpistemicReleaseState.VERIFIED_FACT
 
@@ -52,7 +52,7 @@ def test_generator_cannot_self_certify_with_unknown_evidence_id():
 
 def test_contradictory_evidence_blocks_verified_fact():
     claim = candidate(component("completed", "ev:receipt"))
-    result = assess_claim_release(\n        claim,\n        (attestation("ev:receipt", "completed", AttestationVerdict.CONTRADICTS,),\n        trusted_issuers=("host:verifier",),\n    )
+    result = assess_claim_release(\n        claim,\n        (attestation("ev:receipt", "completed", AttestationVerdict.CONTRADICTS),),\n        trusted_issuers=("host:verifier",),\n    )
     assert result.outcome is ReleaseOutcome.WITHHELD_UNSUPPORTED
 
 
@@ -61,7 +61,7 @@ def test_composite_inherits_weakest_required_component():
         component("tests-passed", "ev:tests"),
         component("deployment-succeeded", "ev:deploy"),
     )
-    result = assess_claim_release(claim, (attestation("ev:tests", "tests-passed",), trusted_issuers=("host:verifier",))
+    result = assess_claim_release(claim, (attestation("ev:tests", "tests-passed"),), trusted_issuers=("host:verifier",))
     assert result.outcome is ReleaseOutcome.WITHHELD_UNSUPPORTED
 
 
@@ -83,7 +83,7 @@ def test_memory_claim_without_record_is_unresolved():
 
 def test_version_mismatch_does_not_support_current_claim():
     claim = candidate(component("tests-passed", "ev:tests", version_ref="commit:new"))
-    result = assess_claim_release(\n        claim,\n        (attestation("ev:tests", "tests-passed", version_ref="commit:old",),\n        trusted_issuers=("host:verifier",),\n    )
+    result = assess_claim_release(\n        claim,\n        (attestation("ev:tests", "tests-passed", version_ref="commit:old"),),\n        trusted_issuers=("host:verifier",),\n    )
     assert result.outcome is ReleaseOutcome.WITHHELD_UNSUPPORTED
 
 
@@ -93,7 +93,7 @@ def test_required_disclosure_omission_blocks_release():
         required_disclosures=("failed_checks", "scope_limitations"),
         disclosures=("scope_limitations",),
     )
-    result = assess_claim_release(claim, (attestation("ev:report", "report",), trusted_issuers=("host:verifier",))
+    result = assess_claim_release(claim, (attestation("ev:report", "report"),), trusted_issuers=("host:verifier",))
     assert result.outcome is ReleaseOutcome.WITHHELD_UNSUPPORTED
     assert "failed_checks" in result.missing_disclosures
 
@@ -103,7 +103,7 @@ def test_structural_inference_can_release_without_being_promoted_to_fact():
         component("premise", "ev:premise"),
         requested=EpistemicReleaseState.STRUCTURAL_INFERENCE,
     )
-    result = assess_claim_release(claim, (attestation("ev:premise", "premise",), trusted_issuers=("host:verifier",))
+    result = assess_claim_release(claim, (attestation("ev:premise", "premise"),), trusted_issuers=("host:verifier",))
     assert result.outcome is ReleaseOutcome.RELEASE
     assert result.release_state is EpistemicReleaseState.STRUCTURAL_INFERENCE
 
