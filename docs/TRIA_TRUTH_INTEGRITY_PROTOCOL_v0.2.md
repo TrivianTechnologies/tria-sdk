@@ -85,6 +85,21 @@ The operation remains read-only. `WARRANTED` is an input from a separate epistem
 
 This makes substantive uptake observable without turning correction into unilateral authority.
 
+### Governed application
+
+Observation alone is not the deployable endpoint. The reference operation `apply_correction_uptake` closes the local loop under ordinary TRIA authority.
+
+1. A separate epistemic process produces a substantive `REEVALUATE` assessment.
+2. The applying actor MUST possess current `ACT` authority for `truth-integrity:corrections`.
+3. The application validates that the affected claim set is rooted in the corrected target and follows explicit claim provenance; an assessment value is not itself an authority token.
+4. Existing affected claims enter `CONTESTED` status rather than being silently overwritten.
+5. TRIA appends an attributable `CorrectionUptakeApplied` receipt with correction ID, affected references, evidence references, and causal links to the reevaluation events.
+6. Downstream consumers therefore observe changed relational state on their next fresh read.
+
+The initial governed application deliberately does not invent replacement claim content. Reevaluation establishes that prior representations can no longer be consumed as uncontested truth; a later attributable revision, withdrawal, or supersession supplies the corrected representation.
+
+The current public executor validates propagation through explicit claim `derived_from` provenance. Wave 2's broader `RELIES_ON` links can identify plans or decisions requiring reevaluation, but mutation of non-claim application objects remains a host/application responsibility until those object types have canonical TRIA state semantics.
+
 ## Required disclosure contracts
 
 Bounded workflows MAY declare mandatory disclosure fields such as:
