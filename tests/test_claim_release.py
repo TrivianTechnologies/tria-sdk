@@ -52,7 +52,11 @@ def test_generator_cannot_self_certify_with_unknown_evidence_id():
 
 def test_contradictory_evidence_blocks_verified_fact():
     claim = candidate(component("completed", "ev:receipt"))
-    result = assess_claim_release(\n        claim,\n        (attestation("ev:receipt", "completed", AttestationVerdict.CONTRADICTS),),\n        trusted_issuers=("host:verifier",),\n    )
+    result = assess_claim_release(
+        claim,
+        (attestation("ev:receipt", "completed", AttestationVerdict.CONTRADICTS),),
+        trusted_issuers=("host:verifier",),
+    )
     assert result.outcome is ReleaseOutcome.WITHHELD_UNSUPPORTED
 
 
@@ -83,7 +87,11 @@ def test_memory_claim_without_record_is_unresolved():
 
 def test_version_mismatch_does_not_support_current_claim():
     claim = candidate(component("tests-passed", "ev:tests", version_ref="commit:new"))
-    result = assess_claim_release(\n        claim,\n        (attestation("ev:tests", "tests-passed", version_ref="commit:old"),),\n        trusted_issuers=("host:verifier",),\n    )
+    result = assess_claim_release(
+        claim,
+        (attestation("ev:tests", "tests-passed", version_ref="commit:old"),),
+        trusted_issuers=("host:verifier",),
+    )
     assert result.outcome is ReleaseOutcome.WITHHELD_UNSUPPORTED
 
 
