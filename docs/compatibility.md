@@ -46,3 +46,9 @@ Software remains MPL-2.0 and documentation CC BY-SA 4.0 as specified by LICENSE.
 
 F033 is UNRESOLVED and blocks global/cross-store no-resurrection claims.
 See [the local authority boundary](agentic-alignment-contract.md#local-no-resurrection-and-unresolved-f033); no cross-store freshness service is included.
+
+The branch-level [local correction safety candidate](correction-safety.md) adds
+canonical graph validation, guarded atomic correction application and status/version
+fields in runtime context (context surface 0.2). Event/replay/projection envelopes
+are unchanged. Exact commit/source pins are required during validation; the package
+version alone does not identify this candidate, and no package is published here.

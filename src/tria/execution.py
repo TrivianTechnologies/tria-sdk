@@ -85,6 +85,14 @@ class ExecutionBridge:
             if not final.allowed:
                 Runtime.record_plan(relationship, final, operation="execution.final")
                 return ExecutionReceipt(final, None, None, None)
+            # Claim status/provenance can change during translation without
+            # revoking READ. Never send a stale prepared claim representation.
+            resolver = Runtime()
+            if any(item.resource.startswith("claim:") and resolver._resolve_context(relationship, item.resource) != item
+                   for item in prepared.plan.context):
+                final = self._changed_plan(request)
+                Runtime.record_plan(relationship, final, operation="execution.context_changed")
+                return ExecutionReceipt(final, None, None, None)
             final = InvocationPlan(request, final.outcome, final.decisions, prepared.plan.context, final.reason)
             try:
                 native = executor(prepared.provider_request)

@@ -28,6 +28,7 @@ from .correction import (
     PropagationAction,
     assess_correction_uptake,
 )
+from .uptake import CorrectionGraphSnapshot, snapshot_correction_graph, CORRECTION_SAFETY_VERSION
 from .core import (
     ClaimHandle,
     DelegationError,
@@ -124,6 +125,7 @@ from .uptake import (
 from .version import __version__
 
 __all__ = [
+    "CorrectionGraphSnapshot", "snapshot_correction_graph", "CORRECTION_SAFETY_VERSION",
     "TriaError", "InputValidationError", "RelationshipNotFoundError", "InvalidRelationshipError", "UnknownParticipantError", "ConcurrentWriteError", "PersistenceError", "UnsupportedStoreError", "UnknownResourceError", "InvocationAlreadyStartedError", "ExecutionError", "HostAdministration",
     "AnthropicMessagesAdapter", "AttributableObservation", "BUNDLE_FORMAT_VERSION", "BundleVerification", "Capability", "CapabilityRequirement",
     "AttestationVerdict", "CandidateClaim", "CORRECTION_RESOURCE", "CORRECTION_UPTAKE_SCHEMA", "Claim", "ClaimComponent", "ClaimHandle", "ClaimReleaseAssessment", "ClaimStatus", "CompatibilityReport", "ConsentRecord", "ConsentRequirement", "CorrectionApplicationReceipt", "CorrectionDisposition", "CorrectionEvidence", "CorrectionUptakeAssessment", "ContextItem",

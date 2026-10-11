@@ -83,5 +83,13 @@
     "fixtures/truth_integrity_v0.1.json",
     "fixtures/agentic_alignment_v0.1.json",
     "fixtures/claim_release_v0.2.json"
-  ]
+  ],
+  "local_correction_safety": {
+    "version": "0.1",
+    "runtime_context_schema": "tria.runtime-context/0.2",
+    "tests": "tests/test_correction_safety.py",
+    "historical_witnesses": "evidence/open-rosetta-19919d8/test_correction_gaps.py",
+    "guarantee": "local canonical claim closure, current ACT and atomic dispute/receipt batch",
+    "f033": "UNRESOLVED"
+  }
 }

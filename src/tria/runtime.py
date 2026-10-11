@@ -11,6 +11,8 @@ from .errors import InputValidationError, UnknownResourceError, text_field, enum
 from .immutability import deep_freeze
 from .types import Capability, GovernanceDecision, GovernanceOutcome
 
+RUNTIME_CONTEXT_SCHEMA = "tria.runtime-context/0.2"
+
 
 @dataclass(frozen=True, slots=True)
 class CapabilityRequirement:
@@ -82,11 +84,15 @@ class ContextItem:
     value: Any
     epistemic_type: str | None = None
     provenance: tuple[str, ...] = ()
+    claim_status: str | None = None
+    claim_version: str | None = None
+    contestation_refs: tuple[str, ...] = ()
 
     def __post_init__(self) -> None:
         text_field(self.resource, "resource")
         object.__setattr__(self, "value", deep_freeze(self.value))
         object.__setattr__(self, "provenance", tuple(self.provenance))
+        object.__setattr__(self, "contestation_refs", tuple(self.contestation_refs))
 
 
 @dataclass(frozen=True, slots=True)
@@ -201,7 +207,11 @@ class Runtime:
             claim = relationship.state.claims.get(resource.split(":", 1)[1])
             if claim is None:
                 raise UnknownResourceError("Claim context does not exist; verify its claim identifier before requesting it.")
-            return ContextItem(resource, claim.content, claim.epistemic_type.value, claim.derived_from or claim.source_refs)
+            relevant = tuple(e for e in relationship.events if e.payload.get("claim_id") == claim.claim_id
+                             and e.event_type in {"ClaimRegistered", "ClaimDisputed"})
+            return ContextItem(resource, claim.content, claim.epistemic_type.value, claim.derived_from or claim.source_refs,
+                               claim.status.value, relevant[-1].event_hash if relevant else None,
+                               tuple(e.event_id for e in relevant if e.event_type == "ClaimDisputed"))
         if self.resource_resolver is None:
             raise UnknownResourceError("External context requires Runtime(resource_resolver=callable); permission does not supply data.")
         item = self.resource_resolver(resource)
