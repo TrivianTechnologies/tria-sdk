@@ -57,4 +57,6 @@ def _context_text(plan: InvocationPlan) -> str:
         lines.append(f"[{item.resource}] {item.epistemic_type or 'UNCLASSIFIED'}: {item.value!s}")
         if item.provenance:
             lines.append(f"provenance: {', '.join(item.provenance)}")
+        if item.claim_status is not None:
+            lines.append(f"claim_status: {item.claim_status}; claim_version: {item.claim_version}; contestation_refs: {', '.join(item.contestation_refs)}")
     return "\n".join(lines)

@@ -23,6 +23,9 @@ class OpenAIResponsesAdapter:
                 "value": item.value,
                 "epistemic_type": item.epistemic_type,
                 "provenance": list(item.provenance),
+                "claim_status": item.claim_status,
+                "claim_version": item.claim_version,
+                "contestation_refs": list(item.contestation_refs),
             }
             for item in plan.context
         ]
@@ -60,4 +63,6 @@ def _context_text(context: list[dict[str, Any]]) -> str:
         lines.append(f"[{item['resource']}] {item['epistemic_type'] or 'UNCLASSIFIED'}: {item['value']!s}")
         if item["provenance"]:
             lines.append(f"provenance: {', '.join(item['provenance'])}")
+        if item["claim_status"] is not None:
+            lines.append(f"claim_status: {item['claim_status']}; claim_version: {item['claim_version']}; contestation_refs: {', '.join(item['contestation_refs'])}")
     return "\n".join(lines)
