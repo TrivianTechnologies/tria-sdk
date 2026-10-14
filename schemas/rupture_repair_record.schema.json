@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://trivianinstitute.org/tria/schemas/rupture_repair_record.schema.json",
+  "title": "TRIA Rupture / Repair Record",
+  "description": "Append-only relational repair record. Structural validity does not establish blame, truth, reconciliation, renewed consent, or restoration to a prior state.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["record_version", "relationship_id", "rupture", "repair", "outcome", "provenance"],
+  "properties": {
+    "record_version": { "type": "string", "const": "0.1" },
+    "relationship_id": { "type": "string", "minLength": 1 },
+    "rupture": {
+      "type": "object",
+      "required": ["rupture_id", "recorded_by", "affected_scope", "expectation_or_boundary", "observed_impact", "status", "event_id"],
+      "properties": {
+        "rupture_id": { "type": "string", "minLength": 1 },
+        "recorded_by": { "type": "string", "minLength": 1 },
+        "affected_scope": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+        "expectation_or_boundary": { "type": "string", "minLength": 1 },
+        "observed_impact": { "type": "string", "minLength": 1 },
+        "status": { "type": "string", "enum": ["asserted", "acknowledged", "contested", "unresolved"] },
+        "evidence_refs": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "event_id": { "type": "string", "minLength": 1 }
+      }
+    },
+    "repair": {
+      "type": "object",
+      "required": ["repair_id", "offered_by", "status", "offered_actions", "accepted_actions", "declined_actions", "event_refs"],
+      "properties": {
+        "repair_id": { "type": ["string", "null"] },
+        "offered_by": { "type": ["string", "null"] },
+        "status": { "type": "string", "enum": ["not_offered", "offered", "accepted", "partially_accepted", "declined", "held", "unresolved"] },
+        "offered_actions": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "accepted_actions": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "declined_actions": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "note": { "type": ["string", "null"] },
+        "event_refs": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "outcome": {
+      "type": "object",
+      "required": ["restored", "remains_changed", "unresolved", "event_id"],
+      "properties": {
+        "restored": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "remains_changed": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "unresolved": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "new_baseline_ref": { "type": ["string", "null"] },
+        "next_relational_state": { "type": ["string", "null"] },
+        "review_condition": { "type": ["string", "null"] },
+        "event_id": { "type": ["string", "null"] }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "required": ["event_refs"],
+      "properties": {
+        "event_refs": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } }
+      }
+    }
+  }
+}
