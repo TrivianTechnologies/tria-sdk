@@ -8,6 +8,7 @@ from uuid import uuid4
 from .errors import (RelationshipNotFoundError, InvalidRelationshipError, UnknownParticipantError, UnsupportedStoreError, InputValidationError, text_field, enum_field, conditions_field, content_field)
 from .events import EventProposal, RelationalEvent, verify_event_chain
 from .governance import GovernanceEngine
+from .repair import RepairResponseStatus, RuptureStatus
 from .state import RelationalState, reduce_events
 from .store import EventStore, InMemoryEventStore
 from .types import Capability, EpistemicType, GovernanceDecision, GovernanceOutcome, LifecycleState
@@ -261,6 +262,208 @@ class Relationship:
 
     def check_policy_adoption(self, policy_id: str, policy_version: str) -> GovernanceDecision:
         return self._governance.require_policy_adoption(self.state, policy_id, policy_version)
+
+    def record_rupture(
+        self,
+        actor: str,
+        *,
+        affected_scope: tuple[str, ...] | list[str],
+        expectation_or_boundary: str,
+        observed_impact: str,
+        status: RuptureStatus = RuptureStatus.ASSERTED,
+        evidence_refs: tuple[str, ...] | list[str] = (),
+    ) -> RelationalEvent:
+        """Append a participant-attributed rupture record without establishing blame or truth."""
+        self._participant(actor)
+        scope = conditions_field(affected_scope, "affected_scope")
+        if not scope:
+            raise InputValidationError("affected_scope must contain at least one scope label.")
+        evidence = conditions_field(evidence_refs, "evidence_refs")
+        content_field(expectation_or_boundary, "expectation_or_boundary")
+        content_field(observed_impact, "observed_impact")
+        enum_field(status, RuptureStatus, "status")
+        rupture_id = str(uuid4())
+        return self._commit(
+            "RuptureRecorded",
+            actor,
+            {
+                "rupture_id": rupture_id,
+                "affected_scope": list(scope),
+                "expectation_or_boundary": expectation_or_boundary,
+                "observed_impact": observed_impact,
+                "status": status.value,
+                "evidence_refs": list(evidence),
+            },
+        )
+
+    def offer_repair(
+        self,
+        actor: str,
+        rupture_id: str,
+        *,
+        offered_actions: tuple[str, ...] | list[str],
+        note: str | None = None,
+    ) -> RelationalEvent:
+        """Offer bounded repair actions. An offer never implies obligation or renewed consent."""
+        self._participant(actor)
+        text_field(rupture_id, "rupture_id")
+        actions = conditions_field(offered_actions, "offered_actions")
+        if not actions:
+            raise InputValidationError("offered_actions must contain at least one action.")
+        if note is not None:
+            content_field(note, "note")
+        rupture = next(
+            (
+                event for event in reversed(self.events)
+                if event.event_type == "RuptureRecorded"
+                and event.payload.get("rupture_id") == rupture_id
+            ),
+            None,
+        )
+        if rupture is None:
+            raise InputValidationError("rupture_id must reference an existing rupture record.")
+        repair_id = str(uuid4())
+        return self._commit(
+            "RepairOffered",
+            actor,
+            {
+                "repair_id": repair_id,
+                "rupture_id": rupture_id,
+                "offered_actions": list(actions),
+                "note": note,
+            },
+            (rupture.event_id,),
+        )
+
+    def respond_to_repair(
+        self,
+        actor: str,
+        repair_id: str,
+        status: RepairResponseStatus,
+        *,
+        accepted_actions: tuple[str, ...] | list[str] = (),
+        declined_actions: tuple[str, ...] | list[str] = (),
+        note: str | None = None,
+    ) -> RelationalEvent:
+        """Record a participant response without converting refusal into continuation or consent."""
+        self._participant(actor)
+        text_field(repair_id, "repair_id")
+        enum_field(status, RepairResponseStatus, "status")
+        accepted = conditions_field(accepted_actions, "accepted_actions")
+        declined = conditions_field(declined_actions, "declined_actions")
+        if note is not None:
+            content_field(note, "note")
+
+        offer = next(
+            (
+                event for event in reversed(self.events)
+                if event.event_type == "RepairOffered"
+                and event.payload.get("repair_id") == repair_id
+            ),
+            None,
+        )
+        if offer is None:
+            raise InputValidationError("repair_id must reference an existing repair offer.")
+
+        offered = tuple(offer.payload.get("offered_actions", ()))
+        offered_set = set(offered)
+        if not set(accepted).issubset(offered_set) or not set(declined).issubset(offered_set):
+            raise InputValidationError("accepted_actions and declined_actions must come from the offered repair actions.")
+        if set(accepted) & set(declined):
+            raise InputValidationError("an offered action cannot be both accepted and declined.")
+
+        if status is RepairResponseStatus.ACCEPTED:
+            if set(accepted) != offered_set or declined:
+                raise InputValidationError("accepted repair requires every offered action to be explicitly accepted.")
+        elif status is RepairResponseStatus.PARTIALLY_ACCEPTED:
+            if not accepted or not declined or set(accepted) | set(declined) != offered_set:
+                raise InputValidationError("partial acceptance must explicitly partition every offered action.")
+        elif status is RepairResponseStatus.DECLINED:
+            if set(declined) != offered_set or accepted:
+                raise InputValidationError("declined repair requires every offered action to be explicitly declined.")
+        elif accepted or declined:
+            raise InputValidationError("held or unresolved repair responses must not imply accepted or declined actions.")
+
+        return self._commit(
+            "RepairResponded",
+            actor,
+            {
+                "repair_id": repair_id,
+                "rupture_id": offer.payload["rupture_id"],
+                "status": status.value,
+                "accepted_actions": list(accepted),
+                "declined_actions": list(declined),
+                "note": note,
+            },
+            (offer.event_id,),
+        )
+
+    def record_repair_outcome(
+        self,
+        actor: str,
+        repair_id: str,
+        *,
+        restored: tuple[str, ...] | list[str] = (),
+        remains_changed: tuple[str, ...] | list[str] = (),
+        unresolved: tuple[str, ...] | list[str] = (),
+        new_baseline_ref: str | None = None,
+        next_relational_state: str | None = None,
+        review_condition: str | None = None,
+    ) -> RelationalEvent:
+        """Record repair effects without asserting a return to the pre-rupture relationship."""
+        self._participant(actor)
+        text_field(repair_id, "repair_id")
+        restored_values = conditions_field(restored, "restored")
+        changed_values = conditions_field(remains_changed, "remains_changed")
+        unresolved_values = conditions_field(unresolved, "unresolved")
+        for value, name in (
+            (new_baseline_ref, "new_baseline_ref"),
+            (next_relational_state, "next_relational_state"),
+            (review_condition, "review_condition"),
+        ):
+            if value is not None:
+                content_field(value, name)
+
+        offer = next(
+            (
+                event for event in reversed(self.events)
+                if event.event_type == "RepairOffered"
+                and event.payload.get("repair_id") == repair_id
+            ),
+            None,
+        )
+        if offer is None:
+            raise InputValidationError("repair_id must reference an existing repair offer.")
+
+        response = next(
+            (
+                event for event in reversed(self.events)
+                if event.event_type == "RepairResponded"
+                and event.payload.get("repair_id") == repair_id
+            ),
+            None,
+        )
+        if response is None or response.payload.get("status") not in {
+            RepairResponseStatus.ACCEPTED.value,
+            RepairResponseStatus.PARTIALLY_ACCEPTED.value,
+        }:
+            raise InputValidationError("repair outcome requires an accepted or partially accepted repair response.")
+
+        return self._commit(
+            "RepairOutcomeRecorded",
+            actor,
+            {
+                "repair_id": repair_id,
+                "rupture_id": offer.payload["rupture_id"],
+                "restored": list(restored_values),
+                "remains_changed": list(changed_values),
+                "unresolved": list(unresolved_values),
+                "new_baseline_ref": new_baseline_ref,
+                "next_relational_state": next_relational_state,
+                "review_condition": review_condition,
+            },
+            (offer.event_id, response.event_id),
+        )
 
     def register_claim(self, actor: str, epistemic_type: EpistemicType, content: str, *, derived_from: list[str] | None = None, source_refs: list[str] | None = None) -> ClaimHandle:
         self._participant(actor)
