@@ -70,3 +70,5 @@ attempt ID; reuse of a reserved ID is rejected even across SQLite reopen. A bloc
 preparation may not reserve an ID, but applications should use a new attempt ID for
 each intentional retry. An ID is not provider-enforced idempotency unless the host
 maps it into an executor/provider contract. Async executors are unsupported.
+
+The optional [host freshness profile](host-freshness.md) defines strongly ordered digest-inbox admission for an enrolled SQLite primary.
