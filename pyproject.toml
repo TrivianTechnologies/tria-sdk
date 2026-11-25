@@ -26,7 +26,11 @@ Documentation = "https://github.com/TrivianTechnologies/tria-sdk/blob/main/docs/
 Issues = "https://github.com/TrivianTechnologies/tria-sdk/issues"
 
 [project.optional-dependencies]
-dev = ["pytest>=8.0", "build>=1.2", "jsonschema>=4.23"]
+freshness = ["syzygy-rosetta[freshness] @ git+https://github.com/TrivianTechnologies/syzygy-rosetta-protocol.git@e7be142719ba86e6f420c29df6b80d6273e6accc"]
+dev = ["pytest>=8.0", "build>=1.2", "jsonschema>=4.23", "syzygy-rosetta[freshness] @ git+https://github.com/TrivianTechnologies/syzygy-rosetta-protocol.git@e7be142719ba86e6f420c29df6b80d6273e6accc"]
+
+[tool.hatch.metadata]
+allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/tria"]
